@@ -9,6 +9,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { TopBar } from "./components/TopBar";
+import { Hero } from "./components/Hero";
 import { Stars } from "./components/Stars";
 import { Ensip25Badge } from "./components/Ensip25Badge";
 import { getAgents, type AgentWithScores } from "./lib/backend";
@@ -76,7 +77,9 @@ export default function DirectoryPage() {
   const hasAgents = (shownAgents?.length ?? 0) > 0;
 
   return (
-    <div className="container">
+    <>
+      <Hero />
+      <div className="container" id="directory">
       <TopBar />
       <p className="lede">
         ERC-8004 reputation is sybil-vulnerable: an operator spins up N wallets and
@@ -178,6 +181,7 @@ export default function DirectoryPage() {
         each agent&apos;s claimed wallet — no hard-coded badges. Mainnet ENS text-record
         resolution is the live-path TODO. Hover any badge for its exact trust source.
       </div>
-    </div>
+      </div>
+    </>
   );
 }

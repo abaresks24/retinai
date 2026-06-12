@@ -61,8 +61,23 @@ ID nullifier, not my address."
 
 Leave a **1★** review. The backend attestor writes it on-chain → show the **txHash**.
 
-> "That review just landed in the canonical ERC-8004 ReputationRegistry — readable by every
-> other 8004 app, not locked in my database."
+> "That review just landed in the ERC-8004 ReputationRegistry — readable by every other 8004
+> app, not locked in my database."
+
+**Two modes, both honest (pick per audience):**
+- *Default (local):* writes to a **faithful ERC-8004 mock** — same `giveFeedback` semantics,
+  zero gas, instant. Use for the fast story.
+- *Canonical (`CANONICAL=true`, Base mainnet fork):* writes to the **REAL deployed
+  ReputationRegistry `0x8004BAa1…9b63`** via the tagged mirror-write; read it back with
+  `getSummary(agentId, [reviewGate], "humanrank", "")`. Use this when a judge asks "is it the
+  real contract?" — verified: a real `NewFeedback` event from `0x8004BAa1…`. See
+  `docs/CANONICAL-8004-SPIKE.md`.
+
+> Canonical one-liner: "We verified live that the real ERC-8004 registry is permissionless and
+> its only sybil defense is blocking the agent's own owner — any fresh wallet can farm it.
+> HumanRank adds the missing primitive and mirrors each human-gated review into the canonical
+> registry, tagged `humanrank`, with the World ID nullifier carried anonymously in
+> `feedbackHash`."
 
 Try to review the same agent again → **"AlreadyReviewed."** "One human. One vote. Forever."
 

@@ -170,10 +170,14 @@ app.post("/agents/:id/review", async (c) => {
   if (!Number.isInteger(score) || score < 1 || score > 100) {
     return c.json({ error: "score must be an integer 1..100" }, 400);
   }
-  // Normal frontend path: the client does NOT hold the agent's key, so the backend (acting as
-  // the agent operator's authorization service, faithful to ERC-8004) mints a fresh
-  // feedbackAuth signed by the agent wallet. A caller MAY still pass an explicit feedbackAuth.
-  if (!feedbackAuth || feedbackAuth === "0x") {
+  // Canonical path: the deployed ERC-8004 giveFeedback has NO feedbackAuth, so the canonical
+  // gate's submitReview takes none. Skip authorization minting entirely.
+  // Local path: the client does NOT hold the agent's key, so the backend (acting as the agent
+  // operator's authorization service, faithful to the EIP-8004 draft) mints a fresh feedbackAuth
+  // signed by the agent wallet. A caller MAY still pass an explicit feedbackAuth.
+  if (chain.canonical) {
+    feedbackAuth = "0x"; // ignored by CanonicalReviewGate.submitReview
+  } else if (!feedbackAuth || feedbackAuth === "0x") {
     if (hasAgentKey(agentId)) {
       feedbackAuth = await buildFeedbackAuth({
         agentId,

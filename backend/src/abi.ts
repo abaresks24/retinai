@@ -131,3 +131,83 @@ export const reputationRegistryAbi: Abi =
   tryLoad("ReputationRegistry") ?? REPUTATION_REGISTRY_ABI;
 export const identityRegistryAbi: Abi =
   tryLoad("IdentityRegistry") ?? IDENTITY_REGISTRY_ABI;
+
+// --- CANONICAL ERC-8004 path (real deployed contracts on Base) ------------------
+// Used when CANONICAL=true. The deployed registry has NO feedbackAuth: giveFeedback is
+// permissionless with client == msg.sender, getSummary requires an explicit client list,
+// and identity is ERC-721 (getAgentWallet). See docs/CANONICAL-8004-SPIKE.md.
+
+export const CANONICAL_REVIEW_GATE_ABI = [
+  {
+    type: "function",
+    name: "submitReview", // NOTE: 3 args, no feedbackAuth on the canonical path
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "nullifierHash", type: "bytes32" },
+      { name: "agentId", type: "uint256" },
+      { name: "score", type: "uint8" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "humanScore",
+    stateMutability: "view",
+    inputs: [{ name: "agentId", type: "uint256" }],
+    outputs: [
+      { name: "avg", type: "uint64" },
+      { name: "count", type: "uint64" },
+    ],
+  },
+  {
+    type: "error",
+    name: "AlreadyReviewed",
+    inputs: [
+      { name: "nullifierHash", type: "bytes32" },
+      { name: "agentId", type: "uint256" },
+    ],
+  },
+  { type: "error", name: "NotAttestor", inputs: [] },
+  { type: "error", name: "BadScore", inputs: [] },
+] as const satisfies Abi;
+
+export const CANONICAL_REPUTATION_ABI = [
+  {
+    type: "function",
+    name: "getSummary",
+    stateMutability: "view",
+    inputs: [
+      { name: "agentId", type: "uint256" },
+      { name: "clientAddresses", type: "address[]" },
+      { name: "tag1", type: "string" },
+      { name: "tag2", type: "string" },
+    ],
+    outputs: [
+      { name: "count", type: "uint64" },
+      { name: "summaryValue", type: "int128" },
+      { name: "summaryValueDecimals", type: "uint8" },
+    ],
+  },
+  {
+    type: "function",
+    name: "getClients",
+    stateMutability: "view",
+    inputs: [{ name: "agentId", type: "uint256" }],
+    outputs: [{ name: "", type: "address[]" }],
+  },
+] as const satisfies Abi;
+
+export const CANONICAL_IDENTITY_ABI = [
+  {
+    type: "function",
+    name: "getAgentWallet",
+    stateMutability: "view",
+    inputs: [{ name: "agentId", type: "uint256" }],
+    outputs: [{ name: "", type: "address" }],
+  },
+] as const satisfies Abi;
+
+export const canonicalReviewGateAbi: Abi =
+  tryLoad("CanonicalReviewGate") ?? CANONICAL_REVIEW_GATE_ABI;
+export const canonicalReputationAbi: Abi = CANONICAL_REPUTATION_ABI;
+export const canonicalIdentityAbi: Abi = CANONICAL_IDENTITY_ABI;

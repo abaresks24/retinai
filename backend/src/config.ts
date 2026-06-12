@@ -39,7 +39,15 @@ export type Addresses = {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // backend/src -> repo root is ../../
 const REPO_ROOT = resolve(__dirname, "..", "..");
-const ADDRESSES_PATH = resolve(REPO_ROOT, "shared", "addresses.local.json");
+
+// CANONICAL=true switches the whole backend to the real ERC-8004 contracts on a Base
+// mainnet fork (addresses.base-fork.json, written by DeployCanonicalFork). Default is the
+// local faithful-mock demo (addresses.local.json). ADDRESSES_FILE overrides explicitly.
+export const CANONICAL = process.env.CANONICAL === "true";
+const ADDRESSES_FILE =
+  process.env.ADDRESSES_FILE ||
+  (CANONICAL ? "addresses.base-fork.json" : "addresses.local.json");
+const ADDRESSES_PATH = resolve(REPO_ROOT, "shared", ADDRESSES_FILE);
 
 function zeroAddresses(): Addresses {
   return {
@@ -76,6 +84,7 @@ export function loadAddresses(): { addresses: Addresses; loaded: boolean } {
 export type Config = {
   port: number;
   rpcUrl: string;
+  chainId: number;
   attestorPk: `0x${string}`;
   reviewGate: string;
   reputationRegistry: string;
@@ -89,6 +98,7 @@ export type Config = {
   x402MaxAmount: string;
   freeTrials: number;
   corsOrigin: string;
+  canonical: boolean;
 };
 
 export function loadConfig(addresses: Addresses): Config {
@@ -97,6 +107,7 @@ export function loadConfig(addresses: Addresses): Config {
     port: Number(process.env.PORT || 8787),
     // env RPC_URL wins; otherwise use the rpcUrl baked into the addresses file.
     rpcUrl: process.env.RPC_URL || addresses.rpcUrl || "http://127.0.0.1:8545",
+    chainId: Number(process.env.CHAIN_ID || addresses.chainId || 31337),
     attestorPk: pk.startsWith("0x") ? pk : (`0x${pk}` as `0x${string}`),
     // env override wins, else the deployed address from the shared file.
     reviewGate: process.env.REVIEW_GATE || addresses.ReviewGate || ZERO,
@@ -113,6 +124,7 @@ export function loadConfig(addresses: Addresses): Config {
     x402MaxAmount: process.env.X402_MAX_AMOUNT || "50000", // 0.05 USDC (6 decimals)
     freeTrials: Number(process.env.FREE_TRIALS || 3),
     corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    canonical: CANONICAL,
   };
 }
 

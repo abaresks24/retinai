@@ -1,0 +1,18 @@
+{
+  "IdentityRegistry": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+  "ReputationRegistry": "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63",
+  "ReviewGate": "0x335aF82EE4fE5Cf6D8aa0836624436C944eED312",
+  "attestor": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "chainId": 8453,
+  "rpcUrl": "http://127.0.0.1:8545",
+  "agents": [
+    {
+      "agentId": 55221,
+      "agentURI": "ipfs://humanrank-research-agent",
+      "endpoint": "http://127.0.0.1:8787/agents/55221",
+      "ensName": "research-agent.humanrank.eth",
+      "registryForEnsip25": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+      "wallet": "0x56262F1779298D9c7C22f5273ee254C3d8e4fA4F"
+    }
+  ]
+}

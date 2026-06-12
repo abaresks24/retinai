@@ -77,12 +77,35 @@ cd ../frontend && npm install && npm run dev              # :3000
   spoofed, read from the on-chain IdentityRegistry — no hard-coded values), and the
   `/compare` hero screen.
 
+## Canonical ERC-8004 mode (writes to the REAL registry)
+
+The default demo writes to a faithful ERC-8004 **mock**. A second mode writes to the **real
+deployed ERC-8004 `ReputationRegistry 0x8004BAa1…9b63`** on a Base-mainnet fork — verified live
+(a real `NewFeedback` event from the canonical contract; round-trip via
+`getSummary(agentId, [reviewGate], "humanrank", "")`). The spike (`docs/CANONICAL-8004-SPIKE.md`)
+found the deployed contract is permissionless with `client == msg.sender` and **no global
+average** — its only sybil defense is blocking the agent's own owner, which is exactly the hole
+HumanRank closes. We mirror each human-gated review into canonical, tagged `humanrank`, nullifier
+in `feedbackHash`.
+
+```bash
+anvil --fork-url https://mainnet.base.org --port 8546 --silent &
+cd contracts && AGENT_OWNER_PK=<fresh-eoa-pk> forge script script/DeployCanonicalFork.s.sol \
+  --rpc-url http://127.0.0.1:8546 --broadcast --private-key 0xac09...ff80   # writes shared/addresses.base-fork.json
+cd ../backend && CANONICAL=true RPC_URL=http://127.0.0.1:8546 npm run dev    # backend on the real registry
+```
+
+`forge test` includes a fork test (`CanonicalReviewGate.t.sol`) that proves the mirror-write +
+dedup against the live canonical contract. Use the `AGENT_OWNER_PK` of a fresh EOA with no Base
+mainnet state (some well-known anvil keys carry an EIP-7702 delegation on Base that breaks the
+NFT mint).
+
 ## Honest trust assumptions
 
 See **AUDIT.md**. Short version: World ID **proof checking** is done off-chain by a trusted
 attestor (AgentBook has no Base-side verifier); the **one-human-one-vote uniqueness invariant
-is enforced fully on-chain** in `ReviewGate`. Local demo uses faithful ERC-8004 mocks; a
-`--canonical` path targets the real Base registries.
+is enforced fully on-chain** in `ReviewGate`. Local demo uses faithful ERC-8004 mocks; the
+`CANONICAL=true` path targets the real Base registries.
 
 Targets: **World Track A (AgentKit, $7.5k)** · **ENS Best Integration for AI Agents ($5k)** ·
 **ENS Integrate pool ($6k)**.

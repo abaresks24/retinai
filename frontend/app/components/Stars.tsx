@@ -7,7 +7,7 @@ export function Stars({
   size = "md",
 }: {
   value: number;
-  size?: "md" | "big" | "huge";
+  size?: "sm" | "md" | "big" | "huge";
 }) {
   const filled = Math.round(Math.max(0, Math.min(5, value)));
   const cls = size === "md" ? "stars" : `stars ${size}`;

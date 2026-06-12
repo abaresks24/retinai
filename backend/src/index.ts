@@ -19,6 +19,7 @@ import { executeAgent, personaName } from "./agentExec.js";
 import { attest, mockNullifierHash } from "./attestor.js";
 import { TrialStore } from "./trialStore.js";
 import { buildFeedbackAuth, hasAgentKey } from "./agentSigner.js";
+import { getLeaderboard, type LeaderboardRow } from "./bigquery.js";
 
 const { addresses, loaded } = loadAddresses();
 const cfg = loadConfig(addresses);
@@ -70,6 +71,50 @@ app.get("/agents/:id", async (c) => {
   const a = findAgent(c.req.param("id"));
   if (!a) return c.json({ error: "agent not found" }, 404);
   return c.json(await withScores(a));
+});
+
+// GET /leaderboard?limit=50 — BigQuery-ranked ERC-8004 reputation leaderboard (Google Cloud
+// prize). Ranks agents by feedback volume + unique-client breadth over Ethereum mainnet
+// crypto_ethereum.logs, flags x402-payable agents, and runs a pure-graph sybil-ring pass.
+// Then OVERLAYS on-chain humanScore/humanCount (from ReviewGate) and ensName (from the
+// addresses file) for any agentId we track. Falls back to a clearly-labeled SAMPLE fixture
+// when BigQuery creds are absent — never crashes.
+app.get("/leaderboard", async (c) => {
+  const limit = Math.max(1, Math.min(500, Number(c.req.query("limit")) || 50));
+  const board = await getLeaderboard({ limit });
+
+  // Build overlays from what we know on-chain / in the addresses file.
+  const ensById = new Map<number, string>();
+  for (const a of addresses.agents) {
+    if (a.ensName) ensById.set(a.agentId, a.ensName);
+  }
+  const trackedIds = new Set(addresses.agents.map((a) => a.agentId));
+
+  const overlaid: LeaderboardRow[] = await Promise.all(
+    board.rows.map(async (row) => {
+      const ensName = ensById.get(row.agentId) ?? row.ensName;
+      // Only spend an RPC read for agents we actually track on-chain.
+      let humanScore = row.humanScore;
+      let humanCount = row.humanCount;
+      if (trackedIds.has(row.agentId)) {
+        try {
+          const h = await chain.humanScore(row.agentId);
+          humanScore = h.count > 0 ? h.avg : humanScore;
+          humanCount = h.count;
+        } catch {
+          // chain.humanScore already swallows errors, but be defensive.
+        }
+      }
+      return { ...row, ensName, humanScore, humanCount };
+    }),
+  );
+
+  return c.json({
+    ...board,
+    rows: overlaid,
+    // Re-surface convention so the frontend can render stars: stars = score / 20.
+    scoreConvention: "stars = score / 20 (20->1*, 100->5*)",
+  });
 });
 
 // POST /worldid/verify — the off-chain attestor. ALWAYS returns trust:"off-chain-attestor".

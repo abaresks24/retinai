@@ -1,5 +1,12 @@
 # HumanRank — self-audit vs track requirements + honest trust & gaps
 
+## Sponsor lineup (3 sponsors = 3 tracks; a track = a sponsor)
+
+1. **World** — Track A AgentKit ($7,500)
+2. **ENS** — Best Integration for AI Agents ($5,000) + Integrate pool ($6,000) *(same sponsor, two prizes)*
+3. **Google Cloud** — Best On-Chain Agent Economy Application ($5,000) — the BigQuery
+   ERC-8004 leaderboard with the human-gated overlay (see Sponsor 3 below)
+
 ## Trust assumptions (state these openly in the demo)
 
 | Concern | What's real | What's trusted/mocked | Why it's honest |
@@ -84,3 +91,30 @@ Automatic qualification once Track 2 work lands. Realistic payout: pool split (~
    if the canonical write is blocked, the local faithful registry is the documented fallback).
 4. **x402**: replace the permissive `X-PAYMENT` check with a real facilitator settlement
    (Coinbase Base facilitator) for a genuine USDC tx in the demo.
+
+---
+
+## Sponsor 3 — Google Cloud: Best On-Chain Agent Economy Application ($5,000)
+
+**Literal requirements:** BigQuery as the core for querying raw Ethereum mainnet ERC-8004
+data; use the ERC-8004 reputation registry addresses; pair BigQuery with a lightweight
+frontend; ideally flag x402-payable agents and rank by reputation.
+
+| Requirement | Status | Evidence |
+| --- | --- | --- |
+| BigQuery over Ethereum mainnet ERC-8004 data | ✅ code / ⚠️ live needs creds | `backend/src/bigquery.ts` + `src/queries/leaderboard.sql` query `bigquery-public-data.crypto_ethereum.logs` WHERE `address` = ReputationRegistry `0x8004BAa1…` AND `topics[0]` = the verified `NewFeedback` topic0 `0x6a4a6174…58febc` |
+| Rank agents by reputation | ✅ | per-agent feedback volume + unique-client breadth; `/leaderboard` endpoint + `/leaderboard` page |
+| **Differentiator — sybil-ring detection** | ✅ | pure-graph SQL (`sybil.sql`): `self-funded` (all reviewers single-purpose wallets) + `ring` (reciprocal owner↔agent feedback). This is the "don't pay a 5★ agent that reviewed itself" signal nobody else overlays |
+| Human-gated overlay | ✅ | endpoint overlays on-chain `humanScore` from ReviewGate → raw-vs-human gap is the visual |
+| Flag x402-payable | ⚠️ partial | sample flags it per-row; live path needs IdentityRegistry `agentURI` metadata (documented TODO) |
+| Lightweight frontend | ✅ | `/leaderboard` Next.js page (source badge, stats strip, ranked rows, sort toggle) |
+| No hard-coded values | ⚠️ | live BigQuery is real; **SAMPLE fixture** is used when no GCP creds (clearly labeled `source: sample`). Must run live for the judged demo |
+
+**Gap to close on-site:** create a GCP project, enable BigQuery, set `GCP_PROJECT` +
+`GOOGLE_APPLICATION_CREDENTIALS` (free; the Ethereum dataset is public) → `/leaderboard`
+flips from `source: sample` to `source: bigquery`. The SQL + topic0 are verified; only auth
+is missing. `rawScore` value-decode from log `data` is a documented best-effort TODO (ranking
+is by volume/breadth, which is robust). See `docs/GOOGLE-BIGQUERY.md`.
+
+**Demo note:** seed one human review on agent 1 (`scripts/seed.ts` / a `/review`) so the
+leaderboard shows a high raw score next to a low human score — the farmed-vs-real gap.

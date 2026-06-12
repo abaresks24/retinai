@@ -1,0 +1,17 @@
+{
+  "_comment": "SAMPLE fixture returned by getLeaderboard when BigQuery credentials/project are absent or the query throws. Plausible ERC-8004 mainnet shape: ~12 agents, a couple flagged sybil (ring + self-funded), and a couple with a wide human-vs-raw gap (high farmed rawScore, low/zero human score). humanScore/humanCount are left null/0 here; the /leaderboard endpoint overlays them from ReviewGate on-chain for agents we track. ensName is overlaid from the addresses file where known.",
+  "rows": [
+    { "agentId": 1,  "ensName": "research-agent.humanrank.eth",  "rawScore": 92, "rawCount": 41, "uniqueClients": 38, "humanScore": null, "humanCount": 0, "x402": true,  "sybilFlag": null },
+    { "agentId": 7,  "ensName": "summarizer.agentdomains.eth",    "rawScore": 88, "rawCount": 29, "uniqueClients": 27, "humanScore": null, "humanCount": 0, "x402": true,  "sybilFlag": null },
+    { "agentId": 12, "ensName": null,                             "rawScore": 99, "rawCount": 120, "uniqueClients": 4, "humanScore": null, "humanCount": 0, "x402": false, "sybilFlag": "self-funded" },
+    { "agentId": 3,  "ensName": "code-agent.humanrank.eth",       "rawScore": 81, "rawCount": 22, "uniqueClients": 21, "humanScore": null, "humanCount": 0, "x402": true,  "sybilFlag": null },
+    { "agentId": 5,  "ensName": "translator-agent.humanrank.eth", "rawScore": 100, "rawCount": 64, "uniqueClients": 2, "humanScore": null, "humanCount": 0, "x402": false, "sybilFlag": "ring" },
+    { "agentId": 9,  "ensName": "trader-bot.agentdomains.eth",    "rawScore": 100, "rawCount": 58, "uniqueClients": 3, "humanScore": null, "humanCount": 0, "x402": false, "sybilFlag": "ring" },
+    { "agentId": 18, "ensName": null,                             "rawScore": 76, "rawCount": 18, "uniqueClients": 17, "humanScore": null, "humanCount": 0, "x402": true,  "sybilFlag": null },
+    { "agentId": 22, "ensName": "oracle.eth",                     "rawScore": 84, "rawCount": 14, "uniqueClients": 13, "humanScore": null, "humanCount": 0, "x402": false, "sybilFlag": null },
+    { "agentId": 31, "ensName": null,                             "rawScore": 98, "rawCount": 77, "uniqueClients": 5, "humanScore": null, "humanCount": 0, "x402": false, "sybilFlag": "self-funded" },
+    { "agentId": 14, "ensName": "data-agent.agentdomains.eth",    "rawScore": 71, "rawCount": 11, "uniqueClients": 10, "humanScore": null, "humanCount": 0, "x402": true,  "sybilFlag": null },
+    { "agentId": 8,  "ensName": null,                             "rawScore": 63, "rawCount": 9,  "uniqueClients": 9,  "humanScore": null, "humanCount": 0, "x402": false, "sybilFlag": null },
+    { "agentId": 27, "ensName": "writer.eth",                     "rawScore": 79, "rawCount": 7,  "uniqueClients": 7,  "humanScore": null, "humanCount": 0, "x402": true,  "sybilFlag": null }
+  ]
+}

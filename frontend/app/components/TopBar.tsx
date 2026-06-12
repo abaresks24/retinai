@@ -11,6 +11,7 @@ export function TopBar() {
       </Link>
       <nav className="nav">
         <Link href="/app">Directory</Link>
+        <Link href="/leaderboard">Leaderboard</Link>
         <Link href="/docs">Docs</Link>
         <Link href="/">Home</Link>
       </nav>

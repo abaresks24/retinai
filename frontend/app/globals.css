@@ -673,3 +673,43 @@ a {
   mix-blend-mode: overlay;
   pointer-events: none;
 }
+
+/* landing variant: hero fills the viewport (no content scrolls below it) */
+.hero--landing {
+  min-height: 100vh;
+  border-bottom: none;
+}
+
+.btn-lg {
+  padding: 16px 28px;
+  font-size: 16px;
+  border-radius: 14px;
+}
+
+/* docs page */
+.docs {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 56px 24px 96px;
+  line-height: 1.65;
+}
+.docs h1 { font-size: 40px; margin: 0 0 8px; letter-spacing: -0.02em; }
+.docs h2 { font-size: 22px; margin: 38px 0 12px; }
+.docs p, .docs li { color: var(--text-dim); }
+.docs b, .docs strong { color: var(--text); }
+.docs code {
+  background: var(--bg-elev2); border: 1px solid var(--border);
+  padding: 1px 6px; border-radius: 6px; font-size: 13px; color: var(--text);
+}
+.docs .steps { display: grid; gap: 12px; margin: 16px 0; }
+.docs .step {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px 18px;
+}
+.docs .step .n {
+  flex: 0 0 auto; width: 28px; height: 28px; border-radius: 8px;
+  display: grid; place-items: center; font-weight: 700; color: #0a0b11;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+}
+.docs .back { color: var(--accent); font-weight: 600; }

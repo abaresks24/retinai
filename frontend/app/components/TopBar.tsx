@@ -10,7 +10,9 @@ export function TopBar() {
         <span className="tag">one human · one vote per agent</span>
       </Link>
       <nav className="nav">
-        <Link href="/">Directory</Link>
+        <Link href="/app">Directory</Link>
+        <Link href="/docs">Docs</Link>
+        <Link href="/">Home</Link>
       </nav>
     </div>
   );

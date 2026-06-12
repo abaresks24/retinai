@@ -15,7 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      {/* suppressHydrationWarning: browser extensions (Bitdefender/"bis_register",
+          Grammarly, etc.) mutate <body> attributes before React hydrates. This silences
+          that benign mismatch only; real mismatches in our own components still surface. */}
+      <body suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

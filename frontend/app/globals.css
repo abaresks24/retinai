@@ -531,7 +531,7 @@ a {
   inset: 0;
   /* keep text legible over any video, and vignette the edges */
   background:
-    linear-gradient(180deg, rgba(10, 11, 17, 0.45) 0%, rgba(10, 11, 17, 0.2) 35%, rgba(10, 11, 17, 0.85) 100%),
+    linear-gradient(180deg, rgba(10, 11, 17, 0.6) 0%, rgba(10, 11, 17, 0.4) 35%, rgba(10, 11, 17, 0.92) 100%),
     radial-gradient(120% 120% at 50% 30%, transparent 40%, rgba(10, 11, 17, 0.55) 100%);
 }
 
@@ -645,4 +645,31 @@ a {
 @keyframes heroBob {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50% { transform: translateX(-50%) translateY(6px); }
+}
+
+/* stretched-link: card navigates without nesting <a> inside <a> */
+.card-stretch {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+/* Cinematic treatment so a low-res loop reads as intentional, not low-quality:
+   slight blur hides compression blocking, scale crops the blurred edges, gentle
+   grade + a heavier scrim keep the headline crisp over it. */
+.hero-video {
+  filter: blur(2px) saturate(1.14) contrast(1.05) brightness(0.82);
+  transform: scale(1.08);
+  will-change: transform;
+}
+
+/* accent-tinted blend layer for cohesion with the brand palette */
+.hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(124, 140, 255, 0.18), rgba(185, 139, 255, 0.14));
+  mix-blend-mode: overlay;
+  pointer-events: none;
 }

@@ -119,13 +119,23 @@ export default function DirectoryPage() {
           {shownAgents!.map((a) => {
             const isSpoofedDemo = a.ensName === "evil-twin.humanrank.eth";
             return (
-            <Link
+            <div
               key={isSpoofedDemo ? "spoofed-demo" : a.agentId}
-              href={isSpoofedDemo ? "/" : `/agent/${a.agentId}`}
-              onClick={isSpoofedDemo ? (e) => e.preventDefault() : undefined}
               className="card link"
-              style={isSpoofedDemo ? { borderColor: "rgba(251,113,133,0.4)", cursor: "default" } : undefined}
+              style={
+                isSpoofedDemo
+                  ? { position: "relative", borderColor: "rgba(251,113,133,0.4)", cursor: "default" }
+                  : { position: "relative" }
+              }
             >
+              {/* stretched link: whole card navigates to the agent page, no nested <a> */}
+              {!isSpoofedDemo && (
+                <Link
+                  href={`/agent/${a.agentId}`}
+                  className="card-stretch"
+                  aria-label={`Open ${a.ensName || `agent ${a.agentId}`}`}
+                />
+              )}
               <div className="ens">
                 {a.ensName || `agent #${a.agentId}`}
                 <span className="pill">{isSpoofedDemo ? "DEMO" : `#${a.agentId}`}</span>
@@ -150,7 +160,7 @@ export default function DirectoryPage() {
                 </span>
               </div>
 
-              <div className="row" style={{ marginTop: 14 }}>
+              <div className="row" style={{ marginTop: 14, position: "relative", zIndex: 2 }}>
                 {isSpoofedDemo ? (
                   <span className="badge spoofed dot">
                     demo spoof — binding fails on-chain, reputation rejected
@@ -160,16 +170,15 @@ export default function DirectoryPage() {
                     <span className="pill">try · review →</span>
                     <Link
                       href={`/compare/${a.agentId}`}
-                      onClick={(e) => e.stopPropagation()}
                       className="pill"
-                      style={{ borderColor: "var(--accent)" }}
+                      style={{ borderColor: "var(--accent)", position: "relative", zIndex: 2 }}
                     >
                       ⚔ replay sybil attack
                     </Link>
                   </>
                 )}
               </div>
-            </Link>
+            </div>
             );
           })}
         </div>

@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+dist/
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lib/
+.env
+.env.local
+*.log
+.DS_Store
+shared/addresses.local.json
+anvil.log
+backend.log
+frontend.log

@@ -1,0 +1,9 @@
+/node_modules
+/.next
+/out
+next-env.d.ts
+.env
+.env.local
+# materialized by the copy-shared prebuild step
+/public/addresses.local.json
+/public/abi

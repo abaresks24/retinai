@@ -4,8 +4,11 @@
 
 1. **World** — Track A AgentKit ($7,500)
 2. **ENS** — Best Integration for AI Agents ($5,000) + Integrate pool ($6,000) *(same sponsor, two prizes)*
-3. **Google Cloud** — Best On-Chain Agent Economy Application ($5,000) — the BigQuery
-   ERC-8004 leaderboard with the human-gated overlay (see Sponsor 3 below)
+3. **Arc / Circle** — Best Agentic Economy with Circle Agent Stack ($3,250) — agents pay each
+   other in USDC nanopayments **on Arc** (gas + payments in USDC). See Sponsor 3 below.
+
+*Bonus (not a submission slot): the Google Cloud BigQuery leaderboard (`/leaderboard`) stays
+in the repo as an extra analytics surface.*
 
 ## Trust assumptions (state these openly in the demo)
 
@@ -118,3 +121,32 @@ is by volume/breadth, which is robust). See `docs/GOOGLE-BIGQUERY.md`.
 
 **Demo note:** seed one human review on agent 1 (`scripts/seed.ts` / a `/review`) so the
 leaderboard shows a high raw score next to a low human score — the farmed-vs-real gap.
+
+---
+
+## Sponsor 3 — Arc / Circle: Best Agentic Economy with Circle Agent Stack ($3,250)
+
+**Literal requirements:** autonomous AI agents transacting **with each other** via USDC
+nanopayments **on Arc** (gas-free micropayments for API/LLM/data per-use); functional MVP
+(frontend + backend) + **architecture diagram** + video; effective use of Circle dev tools
+(Nanopayments / Gateway / USDC-as-gas). Testnet accepted (Arc mainnet does not exist yet).
+
+| Requirement | Status | Evidence |
+| --- | --- | --- |
+| Payments settle **on Arc in USDC** | ✅ (verified on Arc fork) | `PAYMENTS=arc`: `/agents/:id/call` 402 returns Arc requirements (`chainId:5042002`, asset `0x3600…0000`, per-agent `payTo`); backend verifies a real USDC ERC-20 `Transfer` log before serving (`backend/src/arcSettlement.ts`) |
+| **Agent-to-agent** nanopayment | ✅ | `scripts/agent-to-agent.ts`: Agent A pays Agent B in USDC on Arc, B serves — real on-chain Transfer + balance delta |
+| USDC-as-gas on Arc | ✅ | stack deploys to Arc (gas auto-paid in USDC; DeployArc reported "0.061 USDC") |
+| Circle Agent Stack (Nanopayments/Gateway) | ⚠️ demonstrative | `@circle-fin/x402-batching@3.0.4` wired in `arcGateway.ts` (`--gateway`), lazy + graceful fallback; the **direct** USDC path is load-bearing. Gateway server import has an upstream peer-dep gap (`/arc/status` reports it honestly) |
+| Architecture diagram | ✅ | `docs/ARC-AGENTIC.md` (mermaid) |
+| No mocked payment | ✅ | direct settlement verifies a real on-chain USDC Transfer; the old "any X-PAYMENT header" path only runs in the default `mock` mode |
+
+**Cost:** Arc is **testnet-only** → free (faucet USDC, 20/2h at faucet.circle.com). Total real
+spend for the whole project ≈ $0, plus an optional ~1–2¢ Base-mainnet ERC-8004 prestige write.
+
+**Gap to close on-site:** fund a wallet at faucet.circle.com, deploy to real Arc testnet
+(`forge script DeployArc … --rpc-url https://rpc.testnet.arc.network --broadcast`), run
+`PAYMENTS=arc`. The code is verified on an Arc fork; only faucet USDC (human step) is missing.
+Optionally finish the Circle Gateway server path once the SDK peer-dep is resolved.
+
+**Synergy:** the SAME x402 flow serves World (per-human free trial) and Arc (USDC settlement) —
+the 4th call after the trial settles on Arc. One flow, two tracks.

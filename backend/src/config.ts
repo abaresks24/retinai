@@ -24,6 +24,8 @@ export type AgentRecord = {
   agentURI: string;
   endpoint: string;
   registryForEnsip25?: string;
+  // Arc-only: the address that receives USDC nanopayments for this agent (from addresses.arc.json).
+  payTo?: string;
 };
 
 export type Addresses = {
@@ -34,6 +36,8 @@ export type Addresses = {
   IdentityRegistry: string;
   attestor: string;
   agents: AgentRecord[];
+  // Arc-only: the USDC proxy (gas token + ERC-20). Present in addresses.arc.json.
+  usdc?: string;
 };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -44,9 +48,21 @@ const REPO_ROOT = resolve(__dirname, "..", "..");
 // mainnet fork (addresses.base-fork.json, written by DeployCanonicalFork). Default is the
 // local faithful-mock demo (addresses.local.json). ADDRESSES_FILE overrides explicitly.
 export const CANONICAL = process.env.CANONICAL === "true";
+
+// PAYMENTS selects the settlement backend for /agents/:id/call's pay path:
+//   "mock" (default) — accepts any non-empty X-PAYMENT header (the existing local demo).
+//   "arc"            — verifies a REAL USDC ERC-20 Transfer on Arc testnet (DIRECT settlement).
+// PAYMENTS=arc also defaults the addresses file to addresses.arc.json (chainId 5042002).
+export const PAYMENTS = (process.env.PAYMENTS || "mock").toLowerCase();
+export const ARC_MODE = PAYMENTS === "arc";
+
 const ADDRESSES_FILE =
   process.env.ADDRESSES_FILE ||
-  (CANONICAL ? "addresses.base-fork.json" : "addresses.local.json");
+  (ARC_MODE
+    ? "addresses.arc.json"
+    : CANONICAL
+      ? "addresses.base-fork.json"
+      : "addresses.local.json");
 const ADDRESSES_PATH = resolve(REPO_ROOT, "shared", ADDRESSES_FILE);
 
 function zeroAddresses(): Addresses {
@@ -99,7 +115,22 @@ export type Config = {
   freeTrials: number;
   corsOrigin: string;
   canonical: boolean;
+  // --- Arc payment mode (PAYMENTS=arc) ---
+  payments: string; // "mock" | "arc"
+  arcMode: boolean;
+  arcRpcUrl: string;
+  arcChainId: number;
+  arcUsdc: `0x${string}`; // the USDC proxy used as the x402 asset on Arc
+  arcNetwork: string; // x402 accepts[].network string (default "arc-testnet")
+  arcGatewayWallet: `0x${string}`; // Circle GatewayWallet on Arc testnet
 };
+
+// Arc testnet constants — verified facts (do NOT invent addresses).
+export const ARC_USDC = "0x3600000000000000000000000000000000000000" as const;
+export const ARC_GATEWAY_WALLET =
+  "0x0077777d7EBA4688BDeF3E311b846F25870A19B9" as const;
+export const ARC_CHAIN_ID = 5042002;
+export const ARC_RPC_URL = "https://rpc.testnet.arc.network";
 
 export function loadConfig(addresses: Addresses): Config {
   const pk = (process.env.ATTESTOR_PK || DEFAULT_ANVIL_PK) as `0x${string}`;
@@ -125,6 +156,20 @@ export function loadConfig(addresses: Addresses): Config {
     freeTrials: Number(process.env.FREE_TRIALS || 3),
     corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",
     canonical: CANONICAL,
+    // --- Arc payment mode ---
+    payments: PAYMENTS,
+    arcMode: ARC_MODE,
+    // ARC_RPC_URL env wins; else the rpcUrl baked into addresses.arc.json; else the public Arc RPC.
+    // In arc mode the rpc/chainId come from the (Arc) addresses file; otherwise use Arc constants
+    // so /arc/status reports the canonical Arc identity even when the active mode is mock/local.
+    arcRpcUrl: process.env.ARC_RPC_URL || (ARC_MODE ? addresses.rpcUrl : "") || ARC_RPC_URL,
+    arcChainId: Number(
+      process.env.ARC_CHAIN_ID || (ARC_MODE ? addresses.chainId : 0) || ARC_CHAIN_ID,
+    ),
+    arcUsdc: (process.env.ARC_USDC || addresses.usdc || ARC_USDC) as `0x${string}`,
+    arcNetwork: process.env.ARC_NETWORK || "arc-testnet",
+    arcGatewayWallet: (process.env.ARC_GATEWAY_WALLET ||
+      ARC_GATEWAY_WALLET) as `0x${string}`,
   };
 }
 

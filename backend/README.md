@@ -137,6 +137,48 @@ If `GCP_PROJECT` + creds are absent **or any query throws**, the endpoint return
 The live SQL is parameterized (`@registry`, `@topic0`, `@limit`) and validated against the
 documented `crypto_ethereum.logs` schema + the derived `topic0`.
 
+## Arc payment mode (Circle Arc testnet — "Best Agentic Economy" prize)
+
+`PAYMENTS=arc` routes the pay-per-call settlement through **real USDC on Circle's Arc testnet**
+(chainId 5042002) instead of the mock `X-PAYMENT` accept. Everything is additive — the default
+(`PAYMENTS=mock`) local/canonical demos are unchanged.
+
+When `PAYMENTS=arc`, `/agents/:id/call`'s 402 returns Arc settlement requirements:
+
+```json
+{ "x402Version": 1, "accepts": [{
+  "scheme": "exact", "network": "arc-testnet", "chainId": 5042002,
+  "asset": "0x3600000000000000000000000000000000000000",
+  "maxAmountRequired": "10000", "payTo": "<provider arc addr>", "resource": "/agents/2/call"
+}] }
+```
+
+**Settlement (DIRECT, load-bearing)**: the consumer transfers USDC (ERC-20, 6-dec) to `payTo` on
+Arc, then retries with header `X-PAYMENT: <txHash>`. The backend (`src/arcSettlement.ts`) fetches
+that receipt on the Arc RPC and confirms a USDC `Transfer(from, to=payTo, value≥amount)` log on
+`0x3600…0000` — recent, successful, not replayed — then serves with a `settlement` block. Invalid /
+missing / replayed → keeps returning 402.
+
+USDC on Arc is BOTH the native gas token (18-dec) AND an ERC-20 (6-dec): `1 USDC = 1e6 ERC-20 =
+1e18 native`. Gas auto-deducts from the same USDC balance.
+
+**Circle Gateway layer (demonstrative)**: `src/arcGateway.ts` wraps `@circle-fin/x402-batching@3.0.4`
+(server `BatchFacilitatorClient`, client `GatewayClient`). Lazy-imported + try/catch so a flaky SDK
+never breaks boot. `GET /arc/status` reports payment mode + Gateway availability.
+
+Deploy to Arc and run the agent-to-agent demo — see [`../docs/ARC-AGENTIC.md`](../docs/ARC-AGENTIC.md).
+
+```bash
+# deploy ReviewGate + mock ERC-8004 to Arc, write shared/addresses.arc.json:
+cd ../contracts && forge script script/DeployArc.s.sol:DeployArc \
+  --rpc-url https://rpc.testnet.arc.network --broadcast --private-key <FUNDED_PK>
+# run the backend in Arc mode:
+cd ../backend && PAYMENTS=arc npm run start
+```
+
+See `.env.example` for `PAYMENTS`, `ARC_RPC_URL`, `ARC_USDC`, `ARC_NETWORK`, `ARC_GATEWAY_WALLET`,
+`X402_MAX_AMOUNT`, and the faucet instructions.
+
 ## SPEC notes / deviations
 
 - The frozen SPEC body for `/worldid/verify` lists `{ proof, agentId }`; we additionally

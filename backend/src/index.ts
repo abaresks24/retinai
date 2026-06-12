@@ -20,11 +20,20 @@ import { attest, mockNullifierHash } from "./attestor.js";
 import { TrialStore } from "./trialStore.js";
 import { buildFeedbackAuth, hasAgentKey } from "./agentSigner.js";
 import { getLeaderboard, type LeaderboardRow } from "./bigquery.js";
+import { makeArcSettlement, type ArcSettlement } from "./arcSettlement.js";
 
 const { addresses, loaded } = loadAddresses();
 const cfg = loadConfig(addresses);
 const chain = makeChain(cfg);
 const trials = new TrialStore();
+
+// Arc DIRECT settlement (load-bearing) — only constructed when PAYMENTS=arc.
+const arc: ArcSettlement | undefined = cfg.arcMode ? makeArcSettlement(cfg) : undefined;
+
+/** Resolve the Arc payTo for an agent: per-agent addresses.arc.json payTo, else X402_PAY_TO. */
+function arcPayToFor(agent: AgentRecord | undefined): string {
+  return agent?.payTo || cfg.x402PayTo;
+}
 
 const app = new Hono();
 app.use("*", cors({ origin: cfg.corsOrigin, allowHeaders: ["Content-Type", "X-PAYMENT"], allowMethods: ["GET", "POST", "OPTIONS"] }));
@@ -117,6 +126,28 @@ app.get("/leaderboard", async (c) => {
   });
 });
 
+// GET /arc/status — Arc payment mode + Circle Gateway availability (demo legibility).
+app.get("/arc/status", async (c) => {
+  const { gatewayStatus } = await import("./arcGateway.js");
+  const gw = await gatewayStatus(cfg).catch((e) => ({
+    available: false,
+    reason: (e as Error).message,
+  }));
+  return c.json({
+    payments: cfg.payments,
+    arcMode: cfg.arcMode,
+    direct: {
+      loadBearing: true,
+      network: cfg.arcNetwork,
+      chainId: cfg.arcChainId,
+      usdc: cfg.arcUsdc,
+      rpcUrl: cfg.arcMode ? cfg.arcRpcUrl : null,
+      amount: cfg.x402MaxAmount,
+    },
+    gateway: { loadBearing: false, ...gw },
+  });
+});
+
 // POST /worldid/verify — the off-chain attestor. ALWAYS returns trust:"off-chain-attestor".
 app.post("/worldid/verify", async (c) => {
   const body = await c.req.json().catch(() => ({}));
@@ -163,7 +194,61 @@ app.post("/agents/:id/call", async (c) => {
     });
   }
 
-  // Trials exhausted. If a payment header is present (dev: any non-empty value), execute.
+  // Trials exhausted. Settlement depends on the PAYMENTS mode.
+  const resource = new URL(c.req.url).pathname;
+
+  if (arc) {
+    // ---- ARC DIRECT MODE (load-bearing) -----------------------------------------
+    // X-PAYMENT carries the Arc tx hash of the USDC ERC-20 Transfer to payTo. Verify it
+    // on-chain; on success serve, otherwise keep returning the Arc 402 requirements.
+    const payTo = arcPayToFor(agent);
+    const amount = BigInt(cfg.x402MaxAmount); // 6-dec USDC units (e.g. 10000 = $0.01)
+
+    if (payment && payment.trim().length > 0) {
+      const result = await arc.verifyPayment({ txHash: payment.trim(), payTo, amount });
+      if (result.ok) {
+        const exec = await executeAgent(agentId, input, cfg.anthropicApiKey);
+        return c.json({
+          result: exec.result,
+          persona: exec.persona,
+          backend: exec.backend,
+          paid: true,
+          settlement: {
+            network: cfg.arcNetwork,
+            asset: arc.usdc,
+            txHash: payment.trim(),
+            from: result.from,
+            payTo,
+            amount: amount.toString(),
+            blockNumber: result.blockNumber.toString(),
+          },
+        });
+      }
+      // Invalid/missing settlement → fall through to 402 with the reason attached.
+      return c.json(
+        {
+          x402Version: 1,
+          error: "payment required (Arc settlement not verified)",
+          settlementError: result.reason,
+          accepts: [arcAccepts(amount, payTo, resource)],
+        },
+        402,
+      );
+    }
+
+    // No payment header yet → Arc 402 requirements.
+    return c.json(
+      {
+        x402Version: 1,
+        error: "payment required (free trial exhausted for this human)",
+        accepts: [arcAccepts(amount, payTo, resource)],
+      },
+      402,
+    );
+  }
+
+  // ---- MOCK MODE (default local demo) -------------------------------------------
+  // If a payment header is present (dev: any non-empty value), execute.
   if (payment && payment.trim().length > 0) {
     const exec = await executeAgent(agentId, input, cfg.anthropicApiKey);
     return c.json({
@@ -175,7 +260,6 @@ app.post("/agents/:id/call", async (c) => {
   }
 
   // 402 Payment Required — x402-shaped body.
-  const resource = new URL(c.req.url).pathname;
   return c.json(
     {
       x402Version: 1,
@@ -194,6 +278,19 @@ app.post("/agents/:id/call", async (c) => {
     402,
   );
 });
+
+/** Build the Arc x402 `accepts[]` entry (6-dec USDC units, asset = the Arc USDC proxy). */
+function arcAccepts(amount: bigint, payTo: string, resource: string) {
+  return {
+    scheme: "exact",
+    network: cfg.arcNetwork, // "arc-testnet"
+    chainId: cfg.arcChainId, // 5042002
+    asset: cfg.arcUsdc, // 0x3600…0000 (USDC proxy on Arc testnet)
+    maxAmountRequired: amount.toString(), // e.g. "10000" = $0.01 USDC (6 decimals)
+    payTo,
+    resource,
+  };
+}
 
 // POST /agents/:id/review — attestor signs+sends ReviewGate.submitReview.
 app.post("/agents/:id/review", async (c) => {
@@ -272,6 +369,13 @@ serve({ fetch: app.fetch, port: cfg.port }, (info) => {
   console.log(`  ReputationRegistry: ${cfg.reputationRegistry}`);
   console.log(`  agent execution: ${cfg.anthropicApiKey ? "Claude (ANTHROPIC_API_KEY set)" : "deterministic stub"}`);
   console.log(`  free trials per human: ${cfg.freeTrials}`);
+  console.log(`  payments mode: ${cfg.payments}`);
+  if (cfg.arcMode) {
+    console.log(`  ARC settlement: DIRECT USDC on ${cfg.arcNetwork} (chainId ${cfg.arcChainId})`);
+    console.log(`  ARC RPC: ${cfg.arcRpcUrl}`);
+    console.log(`  ARC USDC: ${cfg.arcUsdc}`);
+    console.log(`  ARC amount: ${cfg.x402MaxAmount} (6-dec USDC units)`);
+  }
 });
 
 export default app;

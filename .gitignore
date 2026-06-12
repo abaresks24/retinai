@@ -11,6 +11,8 @@ contracts/lib/
 *.log
 .DS_Store
 shared/addresses.local.json
+shared/addresses.arc.json
+shared/addresses.arc-fork.json
 anvil.log
 backend.log
 frontend.log

@@ -1,0 +1,20 @@
+{
+  "chainId": 5042002,
+  "rpcUrl": "https://rpc.testnet.arc.network",
+  "usdc": "0x3600000000000000000000000000000000000000",
+  "ReviewGate": "0x0000000000000000000000000000000000000000",
+  "ReputationRegistry": "0x0000000000000000000000000000000000000000",
+  "IdentityRegistry": "0x0000000000000000000000000000000000000000",
+  "attestor": "0x0000000000000000000000000000000000000000",
+  "agents": [
+    {
+      "agentId": 1,
+      "ensName": "research-agent.humanrank.eth",
+      "wallet": "0x0000000000000000000000000000000000000000",
+      "payTo": "0x0000000000000000000000000000000000000000",
+      "agentURI": "ipfs://research-agent",
+      "endpoint": "http://127.0.0.1:8787/agents/1",
+      "registryForEnsip25": "0x0000000000000000000000000000000000000000"
+    }
+  ]
+}

@@ -6,9 +6,11 @@
   "description": "HumanRank demo scripts — sybil attack, seed, local orchestration",
   "scripts": {
     "seed": "tsx seed.ts",
-    "attack": "tsx attack.ts"
+    "attack": "tsx attack.ts",
+    "a2a": "tsx agent-to-agent.ts"
   },
   "dependencies": {
+    "@circle-fin/x402-batching": "^3.0.4",
     "viem": "^2.21.0"
   },
   "devDependencies": {

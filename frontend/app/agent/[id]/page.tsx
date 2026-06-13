@@ -7,6 +7,7 @@
  *   3. Review (1..5 stars) -> attestor writes on-chain -> txHash or AlreadyReviewed
  */
 import { use, useEffect, useState } from "react";
+import { Logo } from "../../components/Logo";
 import Link from "next/link";
 import { TopBar } from "../../components/TopBar";
 import { Stars } from "../../components/Stars";
@@ -219,7 +220,7 @@ export default function AgentPage({
             onClick={() => doCall()}
             disabled={!human || callBusy}
           >
-            {callBusy ? <span className="spin" /> : null} Call agent
+            {callBusy ? <Logo className="logo-spin" size={18} /> : null} Call agent
           </button>
           <span className="trial" title="free calls remaining for this human">
             {[0, 1, 2].map((i) => (
@@ -246,7 +247,7 @@ export default function AgentPage({
               onClick={() => doCall("demo")}
               disabled={callBusy}
             >
-              {callBusy ? <span className="spin" /> : null} Pay{" "}
+              {callBusy ? <Logo className="logo-spin" size={18} /> : null} Pay{" "}
               {payment.accepts[0]
                 ? formatUsdc(payment.accepts[0].maxAmountRequired, payment.accepts[0].asset)
                 : "0.05 USDC"}{" "}
@@ -305,7 +306,7 @@ export default function AgentPage({
             onClick={doReview}
             disabled={!human || reviewBusy}
           >
-            {reviewBusy ? <span className="spin" /> : null} Submit review on-chain
+            {reviewBusy ? <Logo className="logo-spin" size={18} /> : null} Submit review on-chain
           </button>
         </div>
 

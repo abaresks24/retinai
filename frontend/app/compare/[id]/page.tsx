@@ -11,6 +11,7 @@
  * is down it falls back to the backend-reported scores and still tells the story.
  */
 import { use, useEffect, useRef, useState } from "react";
+import { Logo } from "../../components/Logo";
 import Link from "next/link";
 import { TopBar } from "../../components/TopBar";
 import { Stars } from "../../components/Stars";
@@ -184,7 +185,7 @@ export default function ComparePage({
 
       <div className="row" style={{ marginTop: 24, justifyContent: "center" }}>
         <button className="btn danger" onClick={replay} disabled={running}>
-          {running ? <span className="spin" /> : "⚔"} Replay sybil attack (100 wallets)
+          {running ? <Logo className="logo-spin" size={18} /> : "⚔"} Replay sybil attack (100 wallets)
         </button>
         <Link href={`/agent/${agentId}`} className="btn">
           ← back to agent

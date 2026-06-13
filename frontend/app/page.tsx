@@ -1,12 +1,12 @@
 "use client";
 
 /**
- * Landing `/` — full-bleed background video, protocol title, a Docs link, and a Launch app
- * button into `/app`. Nothing else: the marketing surface. The video plays muted + looped
- * with a cinematic treatment; if `public/hero.mp4` is absent it falls back to an animated
- * gradient so the page always looks intentional.
+ * Landing `/` — full-bleed background video, logo + title, a Docs link, and a Launch app
+ * button into `/app`. The video plays muted + seamlessly looped (we pre-empt the native
+ * loop stall by seeking to 0 just before the stream ends); if `public/hero.mp4` is absent
+ * it falls back to an animated gradient so the page always looks intentional.
  */
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Logo } from "./components/Logo";
 
@@ -14,13 +14,30 @@ const DOCS_URL = process.env.NEXT_PUBLIC_DOCS_URL || "/docs";
 
 export default function Landing() {
   const [videoOk, setVideoOk] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const docsIsExternal = /^https?:\/\//.test(DOCS_URL);
+
+  // Seamless loop: jump back to the start a hair before the media actually ends, which
+  // avoids the brief end-of-stream stall the native `loop` attribute shows.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const onTime = () => {
+      if (v.duration && v.currentTime >= v.duration - 0.3) {
+        v.currentTime = 0;
+        v.play().catch(() => {});
+      }
+    };
+    v.addEventListener("timeupdate", onTime);
+    return () => v.removeEventListener("timeupdate", onTime);
+  }, [videoOk]);
 
   return (
     <main className="hero hero--landing">
       <div className="hero-media">
         {videoOk && (
           <video
+            ref={videoRef}
             className="hero-video"
             autoPlay
             muted
@@ -38,13 +55,7 @@ export default function Landing() {
       </div>
 
       <div className="hero-inner">
-        <div className="hero-badges">
-          <span className="hero-badge">World ID</span>
-          <span className="hero-badge">ERC-8004</span>
-          <span className="hero-badge">ENS</span>
-        </div>
-
-        <Logo size={92} className="hero-logo" />
+        <Logo size={156} className="hero-logo" />
         <h1 className="hero-title">
           Retin<span className="hero-title-accent">AI</span>
         </h1>

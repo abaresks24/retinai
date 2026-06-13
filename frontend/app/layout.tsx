@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+
+// Display typeface for the brand wordmark + headings.
+const display = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "RetinAI — sybil-resistant reputation for AI agents",
@@ -14,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={display.variable}>
       {/* suppressHydrationWarning: browser extensions (Bitdefender/"bis_register",
           Grammarly, etc.) mutate <body> attributes before React hydrates. This silences
           that benign mismatch only; real mismatches in our own components still surface. */}

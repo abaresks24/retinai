@@ -7,6 +7,7 @@
  * Degrades gracefully when backend / chain / addresses are absent.
  */
 import { useEffect, useState } from "react";
+import { Logo } from "../components/Logo";
 import Link from "next/link";
 import { TopBar } from "../components/TopBar";
 import { Stars } from "../components/Stars";
@@ -94,7 +95,7 @@ export default function AppDirectoryPage() {
 
       {loading && (
         <div className="empty">
-          <span className="spin" /> &nbsp;loading agents…
+          <Logo className="logo-spin" size={52} /> &nbsp;loading agents…
         </div>
       )}
 

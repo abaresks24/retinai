@@ -1,4 +1,5 @@
 "use client";
+import { Logo } from "./Logo";
 
 /**
  * World ID verification. Wires the @worldcoin/idkit IDKitWidget when a NEXT_PUBLIC_WORLD_APP_ID
@@ -106,7 +107,7 @@ export function WorldIdVerify({
               aria-label="mock human id"
             />
             <button className="btn" onClick={verifyMock} disabled={busy}>
-              {busy ? <span className="spin" /> : null} Verify (mock human)
+              {busy ? <Logo className="logo-spin" size={16} /> : null} Verify (mock human)
             </button>
           </div>
         </div>

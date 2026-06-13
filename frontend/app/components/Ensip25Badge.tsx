@@ -1,4 +1,5 @@
 "use client";
+import { Logo } from "./Logo";
 
 /**
  * Live ENSIP-25 verification badge. Computed on the client from on-chain reads — never
@@ -38,7 +39,7 @@ export function Ensip25Badge({
   if (loading) {
     return (
       <span className="badge neutral" title="Reading on-chain IdentityRegistry…">
-        <span className="spin" /> verifying…
+        <Logo className="logo-spin" size={16} /> verifying…
       </span>
     );
   }

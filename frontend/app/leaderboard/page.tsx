@@ -12,6 +12,7 @@
  * crashes. Falls back to the backend's `source: "sample"` data when GCP creds are absent.
  */
 import { useEffect, useMemo, useState } from "react";
+import { Logo } from "../components/Logo";
 import Link from "next/link";
 import { TopBar } from "../components/TopBar";
 import { Stars } from "../components/Stars";
@@ -96,7 +97,7 @@ export default function LeaderboardPage() {
 
       {loading && (
         <div className="empty">
-          <span className="spin" /> &nbsp;querying BigQuery…
+          <Logo className="logo-spin" size={52} /> &nbsp;querying BigQuery…
         </div>
       )}
 

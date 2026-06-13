@@ -26,7 +26,7 @@ import {ICanonicalIdentity} from "../src/interfaces/ICanonicalIdentity.sol";
 ///         The canonical registry addresses are the real 0x8004 deployments (spike §6); they are
 ///         identical on the fork because the fork inherits Base mainnet state. VERIFIED 2026-06-12:
 ///         deploy lands a real giveFeedback (NewFeedback event from 0x8004BAa1...), and
-///         getSummary(agentId, [gate], "humanrank", "") reads back the mirrored entry.
+///         getSummary(agentId, [gate], "lynx", "") reads back the mirrored entry.
 contract DeployCanonicalFork is Script {
     // Canonical ERC-8004 deployments on Base (chainId 8453), verified live 2026-06-12 (spike §6).
     address constant CANONICAL_REPUTATION = 0x8004BAa17C55a88189AE136b182e5fdA19dE9b63;
@@ -38,8 +38,8 @@ contract DeployCanonicalFork is Script {
     uint256 constant DEFAULT_AGENT_OWNER_PK =
         0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d;
 
-    string constant AGENT_URI = "ipfs://humanrank-research-agent";
-    string constant AGENT_ENS = "research-agent.humanrank.eth";
+    string constant AGENT_URI = "ipfs://lynx-research-agent";
+    string constant AGENT_ENS = "research-agent.lynx.eth";
 
     function run() external {
         address attestor = vm.envOr("ATTESTOR_ADDRESS", DEFAULT_ATTESTOR);

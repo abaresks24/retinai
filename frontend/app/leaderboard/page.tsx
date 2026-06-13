@@ -4,7 +4,7 @@
  * /leaderboard — the visible surface of the Google Cloud / BigQuery prize.
  *
  * Ranks real Ethereum mainnet ERC-8004 agents (queried via Google BigQuery public datasets)
- * and overlays HumanRank's human-gated score. The whole point is visual: a high RAW score
+ * and overlays Lynx's human-gated score. The whole point is visual: a high RAW score
  * (red, farmable) next to a low/absent HUMAN score (green, human-gated) = a farmed agent.
  * Sybil rings / self-funded loops are flagged in red.
  *
@@ -81,7 +81,7 @@ export default function LeaderboardPage() {
         Ranked from real Ethereum mainnet <b>ERC-8004</b> reputation data via{" "}
         <b>Google BigQuery</b>. The <b style={{ color: "var(--red)" }}>raw score</b> is
         farmable — an operator self-reviews from sock-puppet wallets to a perfect 5.0★.{" "}
-        <b>HumanRank</b> overlays the{" "}
+        <b>Lynx</b> overlays the{" "}
         <b style={{ color: "var(--green)" }}>human-gated score</b> (one verified human, one
         vote). A big gap between a high raw score and a low/absent human score = farmed.
       </p>
@@ -136,7 +136,7 @@ export default function LeaderboardPage() {
                 className={sort === "human" ? "active" : ""}
                 onClick={() => setSort("human")}
               >
-                HumanRank
+                Lynx
               </button>
             </div>
           </div>
@@ -213,7 +213,7 @@ function LeaderboardRowView({ row, rank }: { row: LeaderboardRow; rank: number }
 
       <div className="lb-col">
         <span className="lab" style={{ color: "var(--green)" }}>
-          HumanRank · human-gated
+          Lynx · human-gated
         </span>
         <span className="tone-human">
           <Stars value={humanStars} size="sm" />

@@ -8,6 +8,7 @@
  */
 import { useState } from "react";
 import Link from "next/link";
+import { Logo } from "./components/Logo";
 
 const DOCS_URL = process.env.NEXT_PUBLIC_DOCS_URL || "/docs";
 
@@ -43,8 +44,9 @@ export default function Landing() {
           <span className="hero-badge">ENS</span>
         </div>
 
+        <Logo size={92} className="hero-logo" />
         <h1 className="hero-title">
-          Human<span className="hero-title-accent">Rank</span>
+          Ly<span className="hero-title-accent">nx</span>
         </h1>
         <p className="hero-tagline">The sybil-proof human review layer for ERC-8004.</p>
         <p className="hero-sub">

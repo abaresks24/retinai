@@ -1,13 +1,17 @@
 import Link from "next/link";
+import { Logo } from "./Logo";
 
 export function TopBar() {
   return (
     <div className="topbar">
       <Link href="/" className="brand">
-        <h1>
-          Human<span className="grad">Rank</span>
-        </h1>
-        <span className="tag">one human · one vote per agent</span>
+        <Logo size={30} />
+        <span>
+          <h1>
+            Ly<span className="grad">nx</span>
+          </h1>
+          <span className="tag">one human · one vote per agent</span>
+        </span>
       </Link>
       <nav className="nav">
         <Link href="/app">Directory</Link>

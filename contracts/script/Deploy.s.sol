@@ -8,7 +8,7 @@ import {MockReputationRegistry} from "../src/mocks/MockReputationRegistry.sol";
 import {MockIdentityRegistry} from "../src/mocks/MockIdentityRegistry.sol";
 import {IIdentityRegistry} from "../src/interfaces/IIdentityRegistry.sol";
 
-/// @notice Deploys the HumanRank contract stack to the local anvil chain and writes the shared
+/// @notice Deploys the Lynx contract stack to the local anvil chain and writes the shared
 ///         addresses file consumed by backend/frontend/scripts.
 contract Deploy is Script {
     // Default anvil account #0 (the deployer / attestor fallback).
@@ -57,9 +57,9 @@ contract Deploy is Script {
         // Build the agents[] array. Each agent object is serialized into its own JSON object,
         // collected into an array, then nested under the top-level object.
         string[3] memory ensNames = [
-            string("research-agent.humanrank.eth"),
-            string("translator-agent.humanrank.eth"),
-            string("code-agent.humanrank.eth")
+            string("research-agent.lynx.eth"),
+            string("translator-agent.lynx.eth"),
+            string("code-agent.lynx.eth")
         ];
         address[3] memory wallets = [AGENT1_WALLET, AGENT2_WALLET, AGENT3_WALLET];
         string[3] memory uris = [

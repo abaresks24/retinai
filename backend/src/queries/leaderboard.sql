@@ -1,4 +1,4 @@
--- HumanRank — ERC-8004 reputation leaderboard over Ethereum mainnet logs (BigQuery).
+-- Lynx — ERC-8004 reputation leaderboard over Ethereum mainnet logs (BigQuery).
 --
 -- Source: `bigquery-public-data.crypto_ethereum.logs`
 --   columns used: address, topics ARRAY<STRING>, data STRING, block_number, block_timestamp

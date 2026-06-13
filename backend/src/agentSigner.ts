@@ -4,7 +4,7 @@
  * In ERC-8004, a client can only leave feedback if the AGENT authorizes it via a
  * `feedbackAuth` signature (this is also exactly why operators can sybil — they authorize
  * their OWN fake clients). In production each agent operator runs a signer that issues these
- * authorizations to legitimate clients. For the HumanRank demo, the backend holds the demo
+ * authorizations to legitimate clients. For the Lynx demo, the backend holds the demo
  * agents' keys and plays that role: when a human-verified review comes in, we mint a fresh
  * feedbackAuth signed by the agent wallet so the forwarded `giveFeedback` succeeds.
  *

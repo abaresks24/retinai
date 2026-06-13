@@ -17,10 +17,10 @@ import {ICanonicalIdentity} from "../src/interfaces/ICanonicalIdentity.sol";
 ///           (a) register a fresh agent via the REAL IdentityRegistry from a test EOA so the gate
 ///               is NOT the owner -> the canonical self-feedback guard passes;
 ///           (b) 3 distinct nullifiers land; a repeat nullifier reverts AlreadyReviewed;
-///           (c) canonical getSummary([gate],"humanrank","") returns count==3 and the avg value,
+///           (c) canonical getSummary([gate],"lynx","") returns count==3 and the avg value,
 ///               and the LOCAL humanScore avg/count match;
 ///           (d) getSummary with an EMPTY client list reverts ("clientAddresses required") — the
-///               global-average-is-impossible property that motivates HumanRank.
+///               global-average-is-impossible property that motivates Lynx.
 contract CanonicalReviewGateForkTest is Test {
     // Canonical ERC-8004 deployments, verified live on Base 2026-06-12 (spike §6).
     address constant CANONICAL_REPUTATION = 0x8004BAa17C55a88189AE136b182e5fdA19dE9b63;
@@ -33,7 +33,7 @@ contract CanonicalReviewGateForkTest is Test {
     ICanonicalReputation reputation = ICanonicalReputation(CANONICAL_REPUTATION);
     ICanonicalIdentity identity = ICanonicalIdentity(CANONICAL_IDENTITY);
 
-    address attestor = makeAddr("humanrank-attestor");
+    address attestor = makeAddr("lynx-attestor");
     address agentOwner = makeAddr("agent-owner-eoa"); // owns the agent; NOT the gate
 
     CanonicalReviewGate gate;
@@ -69,7 +69,7 @@ contract CanonicalReviewGateForkTest is Test {
         // (a) Register a fresh agent from a TEST EOA (agentOwner), so the gate is not the owner
         //     and the canonical self-feedback guard (`!isAuthorizedOrOwner(gate, agentId)`) passes.
         vm.prank(agentOwner);
-        agentId = identity.register("ipfs://humanrank-test");
+        agentId = identity.register("ipfs://lynx-test");
 
         assertEq(identity.ownerOf(agentId), agentOwner, "agent NFT owned by the test EOA");
         assertFalse(
@@ -103,11 +103,11 @@ contract CanonicalReviewGateForkTest is Test {
         );
         gate.submitReview(nA, agentId, 99);
 
-        // (c) Canonical, sybil-resistant read: filter to this gate's client + the "humanrank" tag.
+        // (c) Canonical, sybil-resistant read: filter to this gate's client + the "lynx" tag.
         address[] memory clients = new address[](1);
         clients[0] = address(gate);
         (uint64 count, int128 summaryValue, uint8 summaryDecimals) =
-            reputation.getSummary(agentId, clients, "humanrank", "");
+            reputation.getSummary(agentId, clients, "lynx", "");
 
         assertEq(count, 3, "canonical recorded exactly the 3 mirrored human reviews");
 
@@ -131,9 +131,9 @@ contract CanonicalReviewGateForkTest is Test {
     }
 
     /// (d) Document the canonical "no global average" property: getSummary with an empty client
-    ///     list reverts ("clientAddresses required"). This is WHY HumanRank exists — there is no
+    ///     list reverts ("clientAddresses required"). This is WHY Lynx exists — there is no
     ///     way to ask canonical 8004 for a single trustworthy global score; the reader must pick
-    ///     whom to trust, and HumanRank provides the human-gated client to trust.
+    ///     whom to trust, and Lynx provides the human-gated client to trust.
     function test_Fork_GlobalAverage_IsImpossible() public {
         if (!forked) {
             vm.skip(true);

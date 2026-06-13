@@ -9,7 +9,7 @@
   "agents": [
     {
       "agentId": 1,
-      "ensName": "research-agent.humanrank.eth",
+      "ensName": "research-agent.lynx.eth",
       "wallet": "0x0000000000000000000000000000000000000000",
       "payTo": "0x0000000000000000000000000000000000000000",
       "agentURI": "ipfs://research-agent",

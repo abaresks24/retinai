@@ -1,4 +1,4 @@
-# HumanRank — 2-minute demo script
+# Lynx — 2-minute demo script
 
 > Positioning, every time: **"the sybil-proof human review layer for ERC-8004."** Never "an
 > agent store." The store is the surface; `ReviewGate` is the product.
@@ -32,7 +32,7 @@ nullifier. The console counts **1 accepted, 99 `AlreadyReviewed` rejected**, the
 
 Switch to the `/compare/1` tab and refresh:
 
-> "Same agent. Left: the raw ERC-8004 score anyone can farm — 5.0 stars. Right: HumanRank —
+> "Same agent. Left: the raw ERC-8004 score anyone can farm — 5.0 stars. Right: Lynx —
 > 1.0 star. **100 wallets, one human, one vote**, enforced on-chain. No heuristics."
 
 This is the money shot. The two numbers are read **live from chain**, not hard-coded.
@@ -48,7 +48,7 @@ verified"** badge.
 Point at the red **"✖ spoofed binding"** demo card: "this one claims an agent it doesn't
 control — caught automatically."
 
-Open `research-agent.humanrank.eth` → **Verify with World ID** (Orb or mock). Then the trial:
+Open `research-agent.lynx.eth` → **Verify with World ID** (Orb or mock). Then the trial:
 
 > "Three free calls **per human** — not per wallet." Run 3 calls (the agent actually
 > responds). The 4th returns **402**; click **Pay 0.05 USDC**; the agent runs. "Human-backed
@@ -69,21 +69,21 @@ Leave a **1★** review. The backend attestor writes it on-chain → show the **
   zero gas, instant. Use for the fast story.
 - *Canonical (`CANONICAL=true`, Base mainnet fork):* writes to the **REAL deployed
   ReputationRegistry `0x8004BAa1…9b63`** via the tagged mirror-write; read it back with
-  `getSummary(agentId, [reviewGate], "humanrank", "")`. Use this when a judge asks "is it the
+  `getSummary(agentId, [reviewGate], "lynx", "")`. Use this when a judge asks "is it the
   real contract?" — verified: a real `NewFeedback` event from `0x8004BAa1…`. See
   `docs/CANONICAL-8004-SPIKE.md`.
 
 > Canonical one-liner: "We verified live that the real ERC-8004 registry is permissionless and
 > its only sybil defense is blocking the agent's own owner — any fresh wallet can farm it.
-> HumanRank adds the missing primitive and mirrors each human-gated review into the canonical
-> registry, tagged `humanrank`, with the World ID nullifier carried anonymously in
+> Lynx adds the missing primitive and mirrors each human-gated review into the canonical
+> registry, tagged `lynx`, with the World ID nullifier carried anonymously in
 > `feedbackHash`."
 
 Try to review the same agent again → **"AlreadyReviewed."** "One human. One vote. Forever."
 
 ## Beat 4 — close (1:50–2:00)
 
-> "Everyone built the rails to pay agents. HumanRank is the missing trust layer — the first
+> "Everyone built the rails to pay agents. Lynx is the missing trust layer — the first
 > sybil-proof, human-weighted reputation for ERC-8004, with ENS names verified live and World
 > ID as the rarity that can't be farmed. The store is just the surface."
 
@@ -95,7 +95,7 @@ Try to review the same agent again → **"AlreadyReviewed."** "One human. One vo
   attestor (AgentBook has no Base-side verifier); the **uniqueness invariant is fully
   on-chain** in `ReviewGate`. Said openly, it's a clean trust boundary, not a hidden mock.
 - **"How is this not Agent Passport / 8004scan / RNWY?"** Those link identity or score
-  heuristically. HumanRank is the only one that **gates the reputation write by
+  heuristically. Lynx is the only one that **gates the reputation write by
   proof-of-unique-human** and **consumes ENSIP-25 on the client side** (no consumer tooling
   for it existed before this weekend).
 - **"feedbackAuth?"** The agent operator authorizes reviewers (faithful to ERC-8004) — that's

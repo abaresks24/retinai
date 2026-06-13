@@ -1,5 +1,5 @@
 /**
- * HumanRank — BigQuery leaderboard module (Google Cloud prize).
+ * Lynx — BigQuery leaderboard module (Google Cloud prize).
  *
  * Ranks ERC-8004 agents by reputation using BigQuery over the Ethereum mainnet
  * `crypto_ethereum.logs` public dataset, flags x402-payable agents, and runs a pure-graph

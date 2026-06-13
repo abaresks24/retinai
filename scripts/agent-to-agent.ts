@@ -17,7 +17,7 @@
  * --gateway to attempt it first (falls back to direct on any SDK/balance failure).
  *
  * Self-contained by default: Agent B is started in-process so the demo runs with just an Arc
- * RPC. Point A at the real HumanRank backend instead with  --provider-url=<http://.../agents/2>.
+ * RPC. Point A at the real Lynx backend instead with  --provider-url=<http://.../agents/2>.
  *
  * Usage:
  *   ARC_RPC_URL=http://127.0.0.1:8547 \
@@ -231,7 +231,7 @@ async function tryGatewayPay(url: string): Promise<{ ok: boolean; reason?: strin
 async function main() {
   const line = (s = "") => console.log(s);
   line("=".repeat(72));
-  line("  HumanRank × Arc — agent-to-agent USDC nanopayment");
+  line("  Lynx × Arc — agent-to-agent USDC nanopayment");
   line("=".repeat(72));
   line(`  Arc RPC      : ${ARC_RPC_URL}  (chainId ${ARC_CHAIN.id})`);
   line(`  USDC (asset) : ${USDC}`);

@@ -1,7 +1,7 @@
-# HumanRank — the sybil-proof human review layer for ERC-8004
+# Lynx — the sybil-proof human review layer for ERC-8004
 
 > Everyone built the rails to **pay** AI agents. Nobody built the way to know **which agents
-> deserve to be paid.** HumanRank makes agent reputation **one-human-one-vote**, enforced
+> deserve to be paid.** Lynx makes agent reputation **one-human-one-vote**, enforced
 > on-chain with World ID — and is the first product that *consumes* ENSIP-25/26 agent records.
 
 ETHGlobal NYC 2026. Solo build. The store/directory is just the surface — **`ReviewGate` is
@@ -21,7 +21,7 @@ the product.**
 Three primitives that all key off the **same agent wallet address** and matured in the last 5
 months — composed for the first time:
 
-| Primitive | Role in HumanRank |
+| Primitive | Role in Lynx |
 | --- | --- |
 | **World ID / AgentKit** (per-**human** nullifier, not per-wallet) | one human = one review weight |
 | **ERC-8004** Identity + Reputation registries | the canonical reputation we write into |
@@ -82,10 +82,10 @@ cd ../frontend && npm install && npm run dev              # :3000
 The default demo writes to a faithful ERC-8004 **mock**. A second mode writes to the **real
 deployed ERC-8004 `ReputationRegistry 0x8004BAa1…9b63`** on a Base-mainnet fork — verified live
 (a real `NewFeedback` event from the canonical contract; round-trip via
-`getSummary(agentId, [reviewGate], "humanrank", "")`). The spike (`docs/CANONICAL-8004-SPIKE.md`)
+`getSummary(agentId, [reviewGate], "lynx", "")`). The spike (`docs/CANONICAL-8004-SPIKE.md`)
 found the deployed contract is permissionless with `client == msg.sender` and **no global
 average** — its only sybil defense is blocking the agent's own owner, which is exactly the hole
-HumanRank closes. We mirror each human-gated review into canonical, tagged `humanrank`, nullifier
+Lynx closes. We mirror each human-gated review into canonical, tagged `lynx`, nullifier
 in `feedbackHash`.
 
 ```bash

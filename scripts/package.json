@@ -1,9 +1,9 @@
 {
-  "name": "humanrank-scripts",
+  "name": "lynx-scripts",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "HumanRank demo scripts — sybil attack, seed, local orchestration",
+  "description": "Lynx demo scripts — sybil attack, seed, local orchestration",
   "scripts": {
     "seed": "tsx seed.ts",
     "attack": "tsx attack.ts",

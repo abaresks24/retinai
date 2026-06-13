@@ -8,7 +8,7 @@ import {MockReputationRegistry} from "../src/mocks/MockReputationRegistry.sol";
 import {MockIdentityRegistry} from "../src/mocks/MockIdentityRegistry.sol";
 import {IIdentityRegistry} from "../src/interfaces/IIdentityRegistry.sol";
 
-/// @notice Deploys the HumanRank stack (ReviewGate + mock ERC-8004 registries) to **Arc testnet**
+/// @notice Deploys the Lynx stack (ReviewGate + mock ERC-8004 registries) to **Arc testnet**
 ///         and writes `shared/addresses.arc.json` — a parallel schema to addresses.local.json with
 ///         two Arc-specific additions:
 ///           - top-level `usdc`  = the Arc USDC proxy (gas token AND ERC-20), used as the x402 asset.
@@ -78,9 +78,9 @@ contract DeployArc is Script {
         string memory rpcUrl = vm.envOr("ARC_RPC_URL", string("https://rpc.testnet.arc.network"));
 
         string[3] memory ensNames = [
-            string("research-agent.humanrank.eth"),
-            string("translator-agent.humanrank.eth"),
-            string("code-agent.humanrank.eth")
+            string("research-agent.lynx.eth"),
+            string("translator-agent.lynx.eth"),
+            string("code-agent.lynx.eth")
         ];
         address[3] memory wallets = [AGENT1_WALLET, AGENT2_WALLET, AGENT3_WALLET];
         // Per-agent Arc payTo — defaults to the agent wallet, overridable via PAYTO{1,2,3}.

@@ -148,7 +148,7 @@ export function loadConfig(addresses: Addresses): Config {
       process.env.IDENTITY_REGISTRY || addresses.IdentityRegistry || ZERO,
     anthropicApiKey: process.env.ANTHROPIC_API_KEY || undefined,
     worldAppId: process.env.WORLD_APP_ID || undefined,
-    worldAction: process.env.WORLD_ACTION || "humanrank-review",
+    worldAction: process.env.WORLD_ACTION || "lynx-review",
     x402PayTo: process.env.X402_PAY_TO || addresses.attestor || ZERO,
     x402Asset: process.env.X402_ASSET || "USDC",
     x402Network: process.env.X402_NETWORK || "base",

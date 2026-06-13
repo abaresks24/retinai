@@ -14,18 +14,18 @@ Our current encoding does **NOT** work as-is. The canonical, *deployed* `giveFee
 reverts unless you pass an explicit `clientAddresses` list. **Forwarding is technically
 allowed** (ReviewGate is not blocked from calling), but it collapses every human review to a
 single client (the ReviewGate address), which the canonical aggregation cannot un-mix in the
-default read. The clean, demo-safe path is the **HumanRank-local registry that mirrors the
+default read. The clean, demo-safe path is the **Lynx-local registry that mirrors the
 8004 read interface** plus an *optional* tagged mirror-write to canonical. See
 [§4 Verdict](#4-verdict) for the minimal enumerated changes.
 
 **What to tell judges (one-liner):**
 > "We verified live on Base that the canonical ERC-8004 ReputationRegistry
 > (`0x8004BAa1…9b63`) is permissionless-write with `client == msg.sender` and *no* global
-> average — its only sybil defense is blocking the agent's own owner. HumanRank adds the
+> average — its only sybil defense is blocking the agent's own owner. Lynx adds the
 > missing primitive: **one-human-one-vote** enforced on-chain. Our ReviewGate writes the
 > human-gated aggregate locally and can *additionally* mirror each accepted review into
-> canonical 8004 as a tagged `humanrank` feedback entry, so 8004-native readers can filter
-> `getSummary(agentId, [reviewGate], "humanrank", "")` to get the sybil-resistant score."
+> canonical 8004 as a tagged `lynx` feedback entry, so 8004-native readers can filter
+> `getSummary(agentId, [reviewGate], "lynx", "")` to get the sybil-resistant score."
 
 ---
 
@@ -128,7 +128,7 @@ Source: <https://raw.githubusercontent.com/erc-8004/erc-8004-contracts/master/co
 - **The only write restriction:** `msg.sender` must NOT be the agent owner or an approved
   operator (`isAuthorizedOrOwner == false`). That is the canonical anti-self-review defense —
   and it is *weak*: any fresh wallet that is not the owner can leave feedback. **This is
-  precisely the sybil hole HumanRank closes.**
+  precisely the sybil hole Lynx closes.**
 - **Score is `int128 value` + `uint8 valueDecimals`**, not `uint8 score`. It's a signed
   fixed-point number (e.g. `value=4_50, valueDecimals=2` → 4.50), not a `1..100` integer.
 
@@ -181,7 +181,7 @@ is the *NFT owner*; they can diverge. For ENSIP-25 cross-check, **`ownerOf` is t
 
 ## 2. Diff table — our assumptions vs canonical (deployed)
 
-| Aspect | HumanRank mock / interface / backend | Canonical (deployed on Base) | Match? |
+| Aspect | Lynx mock / interface / backend | Canonical (deployed on Base) | Match? |
 |---|---|---|---|
 | **giveFeedback selector** | `giveFeedback(uint256,uint8,bytes)` | `giveFeedback(uint256,int128,uint8,string,string,string,string,bytes32)` = `0x3c036a7e` | ❌ different selector |
 | **score type/scale** | `uint8 score`, `1..100` (5★ = 20..100) | `int128 value` + `uint8 valueDecimals` (signed fixed-point) | ❌ |
@@ -219,7 +219,7 @@ directly?**
   under the **single client address = ReviewGate**. On-chain, 100 distinct humans become 100
   feedback entries from *one* client (`_lastIndex[agentId][reviewGate]` just increments).
 - Consequence for reads: `getSummary(agentId, [reviewGate], "", "")` returns the **aggregate
-  of all HumanRank reviews** — which is actually *fine and even nice* (it's the human-gated
+  of all Lynx reviews** — which is actually *fine and even nice* (it's the human-gated
   score, addressable by 8004-native readers). What you **lose** is per-human attribution
   *inside* canonical; the one-human-one-vote dedup stays in ReviewGate's own storage (where it
   already lives). The canonical contract cannot see nullifiers, so it cannot enforce or
@@ -244,7 +244,7 @@ reputation.giveFeedback(
     agentId,
     int128(uint128(score)),   // value: reuse our 1..100, valueDecimals = 0  (or score*?, decimals to taste)
     0,                        // valueDecimals
-    "humanrank",              // tag1  -> lets 8004 readers filter to human-gated feedback
+    "lynx",              // tag1  -> lets 8004 readers filter to human-gated feedback
     "",                       // tag2
     "",                       // endpoint
     "",                       // feedbackURI
@@ -253,7 +253,7 @@ reputation.giveFeedback(
 ```
 
 Then the canonical, sybil-resistant read is:
-`getSummary(agentId, [address(reviewGate)], "humanrank", "")`.
+`getSummary(agentId, [address(reviewGate)], "lynx", "")`.
 
 This is a **clean mirror**: ReviewGate stays the product; canonical gets a verifiable,
 tag-filterable, human-gated feedback stream addressable by anyone, with the nullifier carried
@@ -281,10 +281,10 @@ Minimal changes, all **additive** (do not touch the frozen local ABIs):
    `giveFeedback`, 4-arg `getSummary`). Do **not** edit `IReputationRegistry` (it's frozen and
    used by the mock + tests).
 2. **New contract** `CanonicalReviewGate` (or a `canonical` mode flag) that, after the nullifier
-   dedup, calls `canonicalReputation.giveFeedback(agentId, int128(score), 0, "humanrank", "",
+   dedup, calls `canonicalReputation.giveFeedback(agentId, int128(score), 0, "lynx", "",
    "", "", bytes32(nullifierHash))`. Guard: ReviewGate must never be the agent owner.
 3. **Backend**: a second ABI fragment + a `--canonical`/env switch. When canonical:
-   - read score via `getSummary(agentId, [reviewGate], "humanrank", "")` and parse
+   - read score via `getSummary(agentId, [reviewGate], "lynx", "")` and parse
      `(count, value, decimals)`; **drop** the assumption that `getSummary` returns a global avg.
    - read agent wallet via `getAgentWallet(agentId)` / `ownerOf(agentId)` instead of
      `agentWallet(agentId)`.

@@ -60,7 +60,7 @@ export default function AppDirectoryPage() {
   const spoofedDemo: AgentWithScores | null = addr?.deployed
     ? {
         agentId: 1, // collides on purpose: same id, wrong claimed wallet -> mismatch
-        ensName: "evil-twin.humanrank.eth",
+        ensName: "evil-twin.lynx.eth",
         wallet: "0xdeadBEEf00000000000000000000000000C0FFEE",
         agentURI: "ipfs://spoofed",
         endpoint: "",
@@ -79,7 +79,7 @@ export default function AppDirectoryPage() {
       <TopBar />
       <p className="lede">
         ERC-8004 reputation is sybil-vulnerable: an operator spins up N wallets and
-        self-reviews to a perfect 5.0★. <b>HumanRank</b> gates reputation writes by World
+        self-reviews to a perfect 5.0★. <b>Lynx</b> gates reputation writes by World
         ID — one human, one vote per agent, enforced on-chain. Agents are named and
         verified by ENS (ENSIP-25). Stars below are the <b>human-weighted</b> score.
       </p>
@@ -113,7 +113,7 @@ export default function AppDirectoryPage() {
       {!loading && hasAgents && (
         <div className="grid">
           {shownAgents!.map((a) => {
-            const isSpoofedDemo = a.ensName === "evil-twin.humanrank.eth";
+            const isSpoofedDemo = a.ensName === "evil-twin.lynx.eth";
             return (
               <div
                 key={isSpoofedDemo ? "spoofed-demo" : a.agentId}

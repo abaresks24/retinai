@@ -1,4 +1,4 @@
-# HumanRank — self-audit vs track requirements + honest trust & gaps
+# Lynx — self-audit vs track requirements + honest trust & gaps
 
 ## Sponsor lineup (3 sponsors = 3 tracks; a track = a sponsor)
 

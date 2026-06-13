@@ -15,9 +15,9 @@ export type VerifyResult = {
   source: "mock" | "worldid";
 };
 
-/** Deterministic mock nullifier: keccak256("humanrank:" + mockNullifier). */
+/** Deterministic mock nullifier: keccak256("lynx:" + mockNullifier). */
 export function mockNullifierHash(mockNullifier: string): `0x${string}` {
-  return keccak256(toHex(`humanrank:${mockNullifier}`));
+  return keccak256(toHex(`lynx:${mockNullifier}`));
 }
 
 type IdKitProof = {
@@ -64,7 +64,7 @@ async function verifyWorldIdCloud(
       return nh as `0x${string}`;
     }
     // Some proofs encode nullifier as decimal — hash it deterministically into bytes32.
-    return keccak256(toHex(`humanrank:worldid:${nh}`));
+    return keccak256(toHex(`lynx:worldid:${nh}`));
   } catch (err) {
     console.warn(`[attestor] World ID verify threw (${(err as Error).message}); falling back to mock.`);
     return null;

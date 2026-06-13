@@ -7,3 +7,4 @@ next-env.d.ts
 # materialized by the copy-shared prebuild step
 /public/addresses.local.json
 /public/abi
+.vercel

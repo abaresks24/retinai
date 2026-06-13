@@ -10,7 +10,7 @@
  * IdentityRegistry, not from a mainnet ENS text-record resolver. The tooltip says so.
  */
 import { getAddress } from "viem";
-import { getPublicClient } from "./viem";
+import { getClient } from "./viem";
 import { IDENTITY_REGISTRY_ABI, loadAbi } from "./abi";
 import { isZero, type AgentRecord } from "./addresses";
 
@@ -60,7 +60,7 @@ export async function verifyEnsip25(opts: {
 
   try {
     const abi = await loadAbi("IdentityRegistry", IDENTITY_REGISTRY_ABI);
-    const client = getPublicClient();
+    const client = await getClient();
     const registryWallet = (await client.readContract({
       address: registry as `0x${string}`,
       abi,

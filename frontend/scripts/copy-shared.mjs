@@ -35,6 +35,18 @@ if (!tryCopy(addrLocal, resolve(PUBLIC, "addresses.local.json"), "addresses")) {
   tryCopy(addrExample, resolve(PUBLIC, "addresses.local.json"), "addresses(example fallback)");
 }
 
+// DEPLOYED addresses: the committed snapshot of the live (Arc testnet) deployment. This is
+// the file the deployed frontend reads to list real agents + read live on-chain scores
+// with NO backend. Prefer addresses.deployed.json; for local dev fall back to the local
+// anvil file so `npm run dev` works against a fresh local deploy too.
+const addrDeployed = resolve(SHARED, "addresses.deployed.json");
+const deployedDst = resolve(PUBLIC, "addresses.deployed.json");
+if (!tryCopy(addrDeployed, deployedDst, "addresses.deployed")) {
+  if (!tryCopy(addrLocal, deployedDst, "addresses.deployed(local fallback)")) {
+    tryCopy(addrExample, deployedDst, "addresses.deployed(example fallback)");
+  }
+}
+
 // policy spec: the frozen templates + categories the delegation flow renders.
 tryCopy(
   resolve(SHARED, "policy-templates.json"),

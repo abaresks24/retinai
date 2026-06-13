@@ -14,14 +14,13 @@ import { Stars } from "../../components/Stars";
 import { Ensip25Badge } from "../../components/Ensip25Badge";
 import { WorldIdVerify } from "../../components/WorldIdVerify";
 import {
-  getAgent,
   callAgent,
   submitReview,
   type AgentWithScores,
   type VerifyResult,
   type PaymentRequired,
 } from "../../lib/backend";
-import { loadAddresses } from "../../lib/addresses";
+import { getAgentData } from "../../lib/data";
 
 function formatUsdc(maxAmount: string, asset: string): string {
   const n = Number(maxAmount);
@@ -59,24 +58,22 @@ export default function AgentPage({
 
   async function refresh() {
     try {
-      const a = await getAgent(agentId);
-      setAgent(a);
-      setLoadErr(null);
+      // backend when configured, else direct on-chain read from the addresses file
+      const { agent: a, addresses } = await getAgentData(agentId);
+      if (addresses) setIdentityRegistry(addresses.IdentityRegistry ?? "");
+      if (a) {
+        setAgent(a);
+        setLoadErr(null);
+      } else {
+        setLoadErr(`agent #${agentId} not found in the deployed registry`);
+      }
     } catch (e) {
-      setLoadErr((e as Error).message || "could not load agent (backend down?)");
+      setLoadErr((e as Error).message || "could not load agent");
     }
   }
 
   useEffect(() => {
-    let alive = true;
-    (async () => {
-      const addr = await loadAddresses();
-      if (alive) setIdentityRegistry(addr.addresses?.IdentityRegistry ?? "");
-      await refresh();
-    })();
-    return () => {
-      alive = false;
-    };
+    refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agentId]);
 

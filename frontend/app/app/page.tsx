@@ -12,30 +12,31 @@ import Link from "next/link";
 import { TopBar } from "../components/TopBar";
 import { Stars } from "../components/Stars";
 import { Ensip25Badge } from "../components/Ensip25Badge";
-import { getAgents, type AgentWithScores } from "../lib/backend";
+import { type AgentWithScores } from "../lib/backend";
 import { loadAddresses, type AddressesState } from "../lib/addresses";
+import { getAgentsData, type AgentSource } from "../lib/data";
 
 export default function AppDirectoryPage() {
   const [addr, setAddr] = useState<AddressesState | null>(null);
   const [agents, setAgents] = useState<AgentWithScores[] | null>(null);
-  const [backendDown, setBackendDown] = useState(false);
+  const [source, setSource] = useState<AgentSource>("chain");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let alive = true;
     (async () => {
       const a = await loadAddresses();
-      if (!alive) return;
-      setAddr(a);
+      if (alive) setAddr(a);
       try {
-        const list = await getAgents();
+        // Reads from backend when NEXT_PUBLIC_BACKEND_URL is set; otherwise (the deployed
+        // case) goes straight to chain and lists agents from the addresses file with live
+        // on-chain scores. Never hangs — falls back to chain fast.
+        const { agents: list, source: src } = await getAgentsData();
         if (!alive) return;
         setAgents(list);
-        setBackendDown(false);
+        setSource(src);
       } catch {
         if (!alive) return;
-        // backend down — fall back to the static agent list from addresses (no scores)
-        setBackendDown(true);
         setAgents(
           (a.addresses?.agents ?? []).map((r) => ({
             ...r,
@@ -43,6 +44,7 @@ export default function AppDirectoryPage() {
             rawScore: { avg: 0, count: 0, stars: 0 },
           })),
         );
+        setSource("chain");
       } finally {
         if (alive) setLoading(false);
       }
@@ -53,6 +55,7 @@ export default function AppDirectoryPage() {
   }, []);
 
   const identityRegistry = addr?.addresses?.IdentityRegistry ?? "";
+  const onChain = source === "chain";
 
   // A deliberately SPOOFED demo agent so the red ENSIP-25 badge is demonstrable. Its
   // claimed wallet is a random address that does NOT match agentId 1's on-chain registry
@@ -85,11 +88,12 @@ export default function AppDirectoryPage() {
         verified by ENS (ENSIP-25). Stars below are the <b>human-weighted</b> score.
       </p>
 
-      {backendDown && (
-        <div className="note warn">
-          Backend ({process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8787"}) is
-          unreachable — showing agents from the addresses file without live scores. Start
-          the backend to see human-weighted stars.
+      {!loading && onChain && addr?.deployed && (
+        <div className="note">
+          Reading <b>live on-chain</b> from the deployed contracts (chainId{" "}
+          {addr?.addresses?.chainId}) — agents from the ENSIP-25 registry, scores from{" "}
+          <code>ReviewGate.humanScore</code> + <code>ReputationRegistry.getSummary</code>. No
+          backend required. Scores are 0★ until the first World ID-gated review lands.
         </div>
       )}
 

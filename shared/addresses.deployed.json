@@ -1,0 +1,38 @@
+{
+  "IdentityRegistry": "0x48F67BE4EF2568C269F049010684DcD34228B53B",
+  "ReputationRegistry": "0x3e7B67f5a57C403836a4650425A51ED9EACd472e",
+  "ReviewGate": "0x96FF53583b35fa5C550a096bbB31350B61f0B586",
+  "attestor": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "chainId": 5042002,
+  "rpcUrl": "https://rpc.testnet.arc.network",
+  "usdc": "0x3600000000000000000000000000000000000000",
+  "agents": [
+    {
+      "agentId": 1,
+      "agentURI": "ipfs://research-agent",
+      "endpoint": "http://127.0.0.1:8787/agents/1",
+      "ensName": "research-agent.humanrank.eth",
+      "payTo": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+      "registryForEnsip25": "0x48F67BE4EF2568C269F049010684DcD34228B53B",
+      "wallet": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+    },
+    {
+      "agentId": 2,
+      "agentURI": "ipfs://translator-agent",
+      "endpoint": "http://127.0.0.1:8787/agents/2",
+      "ensName": "translator-agent.humanrank.eth",
+      "payTo": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+      "registryForEnsip25": "0x48F67BE4EF2568C269F049010684DcD34228B53B",
+      "wallet": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+    },
+    {
+      "agentId": 3,
+      "agentURI": "ipfs://code-agent",
+      "endpoint": "http://127.0.0.1:8787/agents/3",
+      "ensName": "code-agent.humanrank.eth",
+      "payTo": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+      "registryForEnsip25": "0x48F67BE4EF2568C269F049010684DcD34228B53B",
+      "wallet": "0x90F79bf6EB2c4f870365E785982E1f101E93b906"
+    }
+  ]
+}

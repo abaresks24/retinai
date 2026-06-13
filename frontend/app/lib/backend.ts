@@ -1,11 +1,31 @@
 /**
  * Typed client for the HumanRank backend (FROZEN HTTP API in SPEC.md).
- * Base URL: NEXT_PUBLIC_BACKEND_URL, default http://localhost:8787.
- * All calls are resilient: network errors surface as thrown Errors the caller catches
- * to render a "backend down" state — the UI never hard-crashes.
+ *
+ * Base URL: NEXT_PUBLIC_BACKEND_URL. When that env is EMPTY/UNSET the backend is considered
+ * absent and the data layer (lib/data.ts) reads scores/agents DIRECTLY from chain instead —
+ * this is the deployed (Vercel) case. When it IS set we still fall back to chain fast on any
+ * error/timeout so the UI never hangs.
+ *
+ * All calls are resilient: network errors surface as thrown Errors the caller catches.
  */
-export const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8787";
+const RAW_BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+
+/** True only when an explicit backend URL is configured. */
+export const HAS_BACKEND = RAW_BACKEND.trim().length > 0;
+
+/** Backend base URL when configured; falls back to localhost for legacy callers/labels. */
+export const BACKEND_URL = RAW_BACKEND || "http://localhost:8787";
+
+/** fetch with a short timeout so a dead backend fails fast instead of hanging. */
+async function fetchT(input: string, init?: RequestInit, ms = 3500): Promise<Response> {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(input, { ...init, signal: ctrl.signal });
+  } finally {
+    clearTimeout(t);
+  }
+}
 
 export type ScoreSummary = { avg: number; count: number; stars: number };
 
@@ -41,13 +61,13 @@ async function jsonOrThrow<T>(res: Response): Promise<T> {
 }
 
 export async function getAgents(): Promise<AgentWithScores[]> {
-  const res = await fetch(`${BACKEND_URL}/agents`, { cache: "no-store" });
+  const res = await fetchT(`${BACKEND_URL}/agents`, { cache: "no-store" });
   const body = await jsonOrThrow<{ agents: AgentWithScores[] }>(res);
   return body.agents ?? [];
 }
 
 export async function getAgent(id: number | string): Promise<AgentWithScores> {
-  const res = await fetch(`${BACKEND_URL}/agents/${id}`, { cache: "no-store" });
+  const res = await fetchT(`${BACKEND_URL}/agents/${id}`, { cache: "no-store" });
   return jsonOrThrow<AgentWithScores>(res);
 }
 

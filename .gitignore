@@ -13,6 +13,8 @@ contracts/lib/
 shared/addresses.local.json
 shared/addresses.arc.json
 shared/addresses.arc-fork.json
+# but DO commit the deployable snapshot so the Vercel build has live agents:
+!shared/addresses.deployed.json
 anvil.log
 backend.log
 frontend.log

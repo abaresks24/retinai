@@ -70,10 +70,16 @@ export default function LeaderboardPage() {
       <div className="lb-head">
         <span className="kicker">Google BigQuery · Ethereum mainnet</span>
         {data && (
-          <span className={`src-badge ${data.source === "bigquery" ? "live" : "sample"}`}>
+          <span
+            className={`src-badge ${
+              data.source === "bigquery" || data.source === "chain" ? "live" : "sample"
+            }`}
+          >
             {data.source === "bigquery"
               ? "source: bigquery"
-              : "source: sample — live data needs GCP creds"}
+              : data.source === "chain"
+                ? "source: live on-chain"
+                : "source: sample — live data needs GCP creds"}
           </span>
         )}
       </div>

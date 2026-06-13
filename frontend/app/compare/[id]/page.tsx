@@ -15,9 +15,10 @@ import { Logo } from "../../components/Logo";
 import Link from "next/link";
 import { TopBar } from "../../components/TopBar";
 import { Stars } from "../../components/Stars";
-import { getAgent, type AgentWithScores } from "../../lib/backend";
+import { type AgentWithScores } from "../../lib/backend";
 import { loadAddresses, type Addresses } from "../../lib/addresses";
 import { readOnChainScores, type OnChainScores } from "../../lib/scores";
+import { getAgentData } from "../../lib/data";
 
 type LogLine = { kind: "ok" | "rej" | "dim"; text: string };
 
@@ -46,12 +47,14 @@ export default function ComparePage({
   async function loadNumbers() {
     const a = await loadAddresses();
     setAddresses(a.addresses);
+    // backend when configured, else direct on-chain / addresses-file agent
     let backendAgent: AgentWithScores | null = null;
     try {
-      backendAgent = await getAgent(agentId);
-      setAgent(backendAgent);
+      const { agent: ag } = await getAgentData(agentId);
+      backendAgent = ag;
+      if (ag) setAgent(ag);
     } catch {
-      /* backend down — chain or static only */
+      /* chain or static only */
     }
     const oc = await readOnChainScores({
       agentId,

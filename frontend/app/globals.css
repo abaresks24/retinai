@@ -1062,3 +1062,10 @@ body {
   gap: 16px;
   color: var(--text-dim);
 }
+
+/* x402 flag pill -> greyscale (last purple holdout) */
+.pill.x402 {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.08);
+}

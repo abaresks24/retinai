@@ -35,6 +35,19 @@ if (!tryCopy(addrLocal, resolve(PUBLIC, "addresses.local.json"), "addresses")) {
   tryCopy(addrExample, resolve(PUBLIC, "addresses.local.json"), "addresses(example fallback)");
 }
 
+// policy spec: the frozen templates + categories the delegation flow renders.
+tryCopy(
+  resolve(SHARED, "policy-templates.json"),
+  resolve(PUBLIC, "policy-templates.json"),
+  "policy-templates",
+);
+// optional deployed cage addresses (AgentVault factory etc.) — best-effort.
+tryCopy(
+  resolve(SHARED, "policy-addresses.json"),
+  resolve(PUBLIC, "policy-addresses.json"),
+  "policy-addresses",
+);
+
 // ABIs: copy any *.json present in shared/abi.
 const abiDir = resolve(SHARED, "abi");
 if (existsSync(abiDir)) {

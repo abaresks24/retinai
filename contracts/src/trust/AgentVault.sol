@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
+import {CategoryRegistry} from "./CategoryRegistry.sol";
+
 /// @dev Minimal ERC-20 surface the vault needs. Kept local so the trust layer adds NO new deps.
 interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
@@ -37,8 +39,31 @@ contract AgentVault {
     /// @notice Kill switch. When true, every agent execution path reverts.
     bool public suspended;
 
-    /// @notice Allowed destinations / contracts for both `execute` and `executeCall`.
+    /// @notice Allowed destinations / contracts for both `execute` and `executeCall`. This is the
+    ///         RAW, per-address whitelist (set directly by the owner). Still fully honored — it is
+    ///         how user-managed categories (saved payees, own accounts) and one-off destinations are
+    ///         expressed.
     mapping(address => bool) public whitelisted;
+
+    // --- CATEGORY SUPPORT (backward-compatible addition). ---
+    // Instead of (or in addition to) raw addresses, the owner can opt the cage into a set of
+    // protocol-curated categories. A destination then passes if it's raw-whitelisted OR a member of
+    // any opted-in category. The agent can change NONE of this — exactly like the raw whitelist.
+
+    /// @notice The protocol's curated category registry this vault reads members from. Owner-set.
+    CategoryRegistry public registry;
+
+    /// @notice The category ids (keccak256 of the key) this vault has opted into. Owner-set.
+    bytes32[] public allowedCategories;
+
+    /// @notice Membership mirror of `allowedCategories` for O(1) lookups / introspection.
+    mapping(bytes32 => bool) public categoryAllowed;
+
+    /// @notice An OPTIONAL address the owner authorizes to call the policy setters on their behalf
+    ///         (the PolicyManager, for one-tap template application). The owner sets this ONCE; it is
+    ///         never the agent. Treated as a co-owner for policy configuration only — it can NOT
+    ///         deposit, withdraw, suspend, or re-point the agent.
+    address public authorizedConfigurator;
 
     /// @notice Max value movable in a single `execute`.
     uint256 public perTxCap;
@@ -60,9 +85,14 @@ contract AgentVault {
     error CallFailed();
     error NotAuthorizedToSuspend();
     error EscrowAlreadySet();
+    error NotConfigurator();
 
     event AgentSpend(address indexed to, uint256 amount);
     event PolicyChanged(string indexed what, address indexed who, uint256 value);
+    event RegistrySet(address indexed registry);
+    event CategoriesSet(bytes32[] categories);
+    event CategoryAllowed(bytes32 indexed category, bool allowed);
+    event ConfiguratorSet(address indexed configurator);
     event AgentSuspended(address indexed by); // declared `AgentSuspended` to avoid clashing with the `Suspended` error
     event Deposit(address indexed from, uint256 amount);
     event Withdraw(address indexed to, uint256 amount);
@@ -83,6 +113,14 @@ contract AgentVault {
 
     modifier onlyAgent() {
         if (msg.sender != agent) revert NotAgent();
+        _;
+    }
+
+    /// @dev Owner OR the owner-authorized configurator (the PolicyManager). Used only by the
+    ///      policy-configuration setters so a one-tap template can be applied on the owner's behalf.
+    ///      The agent is NEVER either of these.
+    modifier onlyConfigurator() {
+        if (msg.sender != owner && msg.sender != authorizedConfigurator) revert NotConfigurator();
         _;
     }
 
@@ -111,6 +149,80 @@ contract AgentVault {
     function setBudget(uint256 newBudget) external onlyOwner {
         budget = newBudget;
         emit PolicyChanged("budget", msg.sender, newBudget);
+    }
+
+    // ----------------------------------------------------------------------------------------
+    // CATEGORY POLICY (owner-only, backward-compatible). The agent can change none of it.
+    // ----------------------------------------------------------------------------------------
+
+    /// @notice Wire the protocol's curated category registry. Owner only.
+    function setRegistry(CategoryRegistry _registry) external onlyOwner {
+        registry = _registry;
+        emit RegistrySet(address(_registry));
+    }
+
+    /// @notice Replace the full set of opted-in categories. Owner only. Updates both the array and
+    ///         the O(1) membership mapping.
+    function setAllowedCategories(bytes32[] calldata cats) external onlyConfigurator {
+        _setAllowedCategories(cats);
+    }
+
+    /// @notice Opt into one additional category (idempotent). Owner only.
+    function addAllowedCategory(bytes32 cat) external onlyOwner {
+        if (!categoryAllowed[cat]) {
+            categoryAllowed[cat] = true;
+            allowedCategories.push(cat);
+            emit CategoryAllowed(cat, true);
+        }
+    }
+
+    /// @notice Drop all opted-in categories (raw whitelist is untouched). Owner only.
+    function clearAllowedCategories() external onlyOwner {
+        _clearAllowedCategories();
+    }
+
+    /// @notice Owner authorizes (once) a configurator — the PolicyManager — that may call the
+    ///         policy-configuration entrypoints on the owner's behalf for one-tap template apply.
+    ///         The agent can never be set as configurator by itself (owner-only setter), and the
+    ///         configurator still cannot move funds, suspend, or re-point the agent.
+    function setAuthorizedConfigurator(address configurator) external onlyOwner {
+        authorizedConfigurator = configurator;
+        emit ConfiguratorSet(configurator);
+    }
+
+    /// @notice ONE-TAP CONFIG ENTRYPOINT. The owner OR the authorized configurator (PolicyManager)
+    ///         applies a whole policy in a single call: opt-in categories + per-tx cap + budget.
+    ///         This is the function the PolicyManager.applyTemplate() drives so a user configures an
+    ///         agent's cage in one tap instead of whitelisting addresses by hand.
+    function configure(bytes32[] calldata cats, uint256 cap, uint256 newBudget)
+        external
+        onlyConfigurator
+    {
+        _setAllowedCategories(cats);
+        perTxCap = cap;
+        emit PolicyChanged("perTxCap", msg.sender, cap);
+        budget = newBudget;
+        emit PolicyChanged("budget", msg.sender, newBudget);
+    }
+
+    function _setAllowedCategories(bytes32[] calldata cats) internal {
+        _clearAllowedCategories();
+        for (uint256 i = 0; i < cats.length; i++) {
+            bytes32 c = cats[i];
+            if (!categoryAllowed[c]) {
+                categoryAllowed[c] = true;
+                allowedCategories.push(c);
+            }
+        }
+        emit CategoriesSet(cats);
+    }
+
+    function _clearAllowedCategories() internal {
+        bytes32[] storage cats = allowedCategories;
+        for (uint256 i = 0; i < cats.length; i++) {
+            categoryAllowed[cats[i]] = false;
+        }
+        delete allowedCategories;
     }
 
     /// @notice Re-point the bounded executor. Owner only — the agent cannot re-point itself.
@@ -157,7 +269,7 @@ contract AgentVault {
     ///         This is the FULLY-JUDGED path: the cage understands exactly how much leaves and to
     ///         whom, so it accounts the spend.
     function execute(address to, uint256 amount) external onlyAgent notSuspended {
-        if (!whitelisted[to]) revert NotWhitelisted();
+        if (!_isAllowedDest(to)) revert NotWhitelisted();
         if (amount > perTxCap) revert OverPerTxCap();
         if (totalSpent + amount > budget) revert OverBudget();
 
@@ -175,7 +287,7 @@ contract AgentVault {
     ///      `unauthorizedLoss()` and becomes slashable on-chain proof of breach. This is the seam
     ///      where composability risk is converted into recourse.
     function executeCall(address to, bytes calldata data) external onlyAgent notSuspended {
-        if (!whitelisted[to]) revert NotWhitelisted();
+        if (!_isAllowedDest(to)) revert NotWhitelisted();
 
         // Grant pull access for the duration of this single call, then revoke.
         token.approve(to, token.balanceOf(address(this)));
@@ -183,6 +295,29 @@ contract AgentVault {
         token.approve(to, 0);
 
         if (!ok) revert CallFailed();
+    }
+
+    /// @notice The single destination-authorization predicate used by both agent execution paths.
+    ///         A destination passes if the owner raw-whitelisted it OR it is a vetted member of any
+    ///         category the owner opted into via the protocol registry. Backward-compatible: with no
+    ///         registry/categories set, this collapses to the original `whitelisted[to]` check, so
+    ///         every pre-existing raw-whitelist test stays valid.
+    function _isAllowedDest(address to) internal view returns (bool) {
+        if (whitelisted[to]) return true;
+        if (address(registry) != address(0) && allowedCategories.length > 0) {
+            return registry.isInAnyCategory(allowedCategories, to);
+        }
+        return false;
+    }
+
+    /// @notice Public view mirror of the agent's destination check (handy for the frontend).
+    function isAllowedDest(address to) external view returns (bool) {
+        return _isAllowedDest(to);
+    }
+
+    /// @notice Number of opted-in categories (the public array getter only returns by index).
+    function allowedCategoriesCount() external view returns (uint256) {
+        return allowedCategories.length;
     }
 
     // ----------------------------------------------------------------------------------------

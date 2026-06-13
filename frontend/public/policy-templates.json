@@ -1,0 +1,59 @@
+{
+  "_doc": "FROZEN shared spec for RetinAI agent policies. Categories are protocol-curated allowlists of vetted addresses; templates compose categories + caps so a user configures an agent in one tap instead of whitelisting addresses by hand. The policy is enforced on-chain by the AgentVault cage — the agent can NEVER change it. Amounts are in USDC (6 decimals on-chain).",
+  "categories": [
+    { "key": "STABLECOINS", "label": "Stablecoins", "description": "USDC, USDT, DAI", "curated": true },
+    { "key": "DEX_BLUECHIP", "label": "Blue-chip DEXes", "description": "Audited swap routers (Uniswap, 1inch, CoW…)", "curated": true },
+    { "key": "LENDING", "label": "Lending markets", "description": "Audited lending (Aave, Morpho, Compound)", "curated": true },
+    { "key": "STAKING", "label": "Liquid staking", "description": "Lido, Rocket Pool, …", "curated": true },
+    { "key": "AGENT_SERVICES", "label": "Agent services", "description": "x402 API / inference / data providers", "curated": true },
+    { "key": "SAVED_PAYEES", "label": "Saved payees", "description": "Recipients you've added yourself", "curated": false },
+    { "key": "MY_ACCOUNTS", "label": "My own accounts", "description": "Your other wallets", "curated": false }
+  ],
+  "templates": [
+    {
+      "id": "dca",
+      "name": "Dollar-cost averaging",
+      "summary": "Buys a fixed amount on blue-chip DEXes, capped per day.",
+      "categories": ["DEX_BLUECHIP", "STABLECOINS"],
+      "perTxCap": 100,
+      "budget": 1000,
+      "period": "daily"
+    },
+    {
+      "id": "yield",
+      "name": "Yield optimizer",
+      "summary": "Moves stablecoins between audited lending markets to chase the best rate, 24/7.",
+      "categories": ["LENDING", "STABLECOINS"],
+      "perTxCap": 2000,
+      "budget": 20000,
+      "period": "daily"
+    },
+    {
+      "id": "payments",
+      "name": "Recurring payments",
+      "summary": "Pays your saved recipients on schedule — payroll, subscriptions, invoices.",
+      "categories": ["SAVED_PAYEES", "STABLECOINS"],
+      "perTxCap": 500,
+      "budget": 5000,
+      "period": "weekly"
+    },
+    {
+      "id": "trading",
+      "name": "Trading strategy",
+      "summary": "Executes a strategy on blue-chip DEXes within a strict daily budget.",
+      "categories": ["DEX_BLUECHIP"],
+      "perTxCap": 1000,
+      "budget": 5000,
+      "period": "daily"
+    },
+    {
+      "id": "micro",
+      "name": "Agent services (x402)",
+      "summary": "Pays for APIs, inference and data per call — thousands of micro-payments no human could approve.",
+      "categories": ["AGENT_SERVICES"],
+      "perTxCap": 1,
+      "budget": 50,
+      "period": "daily"
+    }
+  ]
+}

@@ -191,6 +191,21 @@ export default function AgentPage({
         )}
       </div>
 
+      {/* ▶ Delegation CTA — put this agent to work managing funds, safely */}
+      <div className="delegate-cta">
+        <div className="cta-copy">
+          <h3>▶ Put this agent to work</h3>
+          <p>
+            Delegate funds into an on-chain cage. The agent spends only within a policy you
+            set — capped per transaction, capped per period, curated addresses only — and can
+            never change the rules. Misbehavior is covered by its bond.
+          </p>
+        </div>
+        <Link href={`/agent/${agentId}/delegate`} className="btn primary btn-lg">
+          Delegate funds →
+        </Link>
+      </div>
+
       <WorldIdVerify agentId={agentId} onVerified={setHuman} current={human} />
 
       {/* 2 · Try the agent */}

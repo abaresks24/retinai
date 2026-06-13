@@ -1,5 +1,5 @@
 /**
- * Lynx backend — Hono server on port 8787.
+ * RetinAI backend — Hono server on port 8787.
  * Implements the FROZEN HTTP API from SPEC.md:
  *   GET  /health
  *   GET  /agents
@@ -361,7 +361,7 @@ app.post("/agents/:id/review", async (c) => {
 // ---- boot ----------------------------------------------------------------------
 
 serve({ fetch: app.fetch, port: cfg.port }, (info) => {
-  console.log(`Lynx backend listening on http://127.0.0.1:${info.port}`);
+  console.log(`RetinAI backend listening on http://127.0.0.1:${info.port}`);
   console.log(`  addresses file loaded: ${loaded}`);
   console.log(`  RPC: ${cfg.rpcUrl}`);
   console.log(`  attestor: ${chain.attestorAddress}`);

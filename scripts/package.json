@@ -1,9 +1,9 @@
 {
-  "name": "lynx-scripts",
+  "name": "retinai-scripts",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Lynx demo scripts — sybil attack, seed, local orchestration",
+  "description": "RetinAI demo scripts — sybil attack, seed, local orchestration",
   "scripts": {
     "seed": "tsx seed.ts",
     "attack": "tsx attack.ts",

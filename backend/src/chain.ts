@@ -5,7 +5,7 @@
  *  - LOCAL (default): faithful mock ERC-8004 + ReviewGate (with feedbackAuth). chainId 31337.
  *  - CANONICAL: the REAL deployed ERC-8004 registries on a Base mainnet fork + CanonicalReviewGate.
  *    No feedbackAuth (the deployed giveFeedback has none); the sybil-resistant read is the
- *    canonical getSummary(agentId, [reviewGate], "lynx", ""). See docs/CANONICAL-8004-SPIKE.md.
+ *    canonical getSummary(agentId, [reviewGate], "retinai", ""). See docs/CANONICAL-8004-SPIKE.md.
  *
  * Reads NEVER throw to the caller: on any failure we return safe defaults (0 / empty) so read
  * endpoints keep serving. The attestor write path surfaces reverts so we can map AlreadyReviewed.
@@ -52,7 +52,7 @@ export type Chain = {
 export function makeChain(cfg: Config): Chain {
   const chain = defineChain({
     id: cfg.chainId,
-    name: cfg.canonical ? "lynx-base-fork" : "lynx-local",
+    name: cfg.canonical ? "retinai-base-fork" : "retinai-local",
     nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
     rpcUrls: { default: { http: [cfg.rpcUrl] } },
   });

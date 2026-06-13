@@ -9,7 +9,7 @@
   "agents": [
     {
       "agentId": 1,
-      "ensName": "research-agent.lynx.eth",
+      "ensName": "research-agent.retinai.eth",
       "wallet": "0x0000000000000000000000000000000000000000",
       "agentURI": "https://.../agent.json",
       "endpoint": "https://your-backend.example/agents/1",

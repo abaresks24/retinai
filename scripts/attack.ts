@@ -1,10 +1,10 @@
-// attack.ts — THE Lynx demo, run against the LIVE anvil contracts.
+// attack.ts — THE RetinAI demo, run against the LIVE anvil contracts.
 //
 //   PHASE 1 (sybil baseline): 100 fresh wallets each call MockReputationRegistry.giveFeedback
 //     with score 100. Agent 1's operator authorizes every one of them via feedbackAuth. Because
 //     the raw ERC-8004 registry has no per-human uniqueness, getSummary(1) -> avg 100 (5.0 stars).
 //
-//   PHASE 2 (Lynx gate): the SAME review intent routed through ReviewGate.submitReview with
+//   PHASE 2 (RetinAI gate): the SAME review intent routed through ReviewGate.submitReview with
 //     ONE nullifierHash for all 100 attempts. The first lands; the other 99 revert AlreadyReviewed.
 //     humanScore(1) -> avg 20 (1.0 star), count 1.
 //
@@ -172,7 +172,7 @@ async function phase1() {
 // ---------------------------------------------------------------------------
 async function phase2() {
   console.log(
-    `\n${C.bold}${C.green}━━ PHASE 2 — Lynx gate (one human, one vote) ━━${C.reset}`,
+    `\n${C.bold}${C.green}━━ PHASE 2 — RetinAI gate (one human, one vote) ━━${C.reset}`,
   );
   console.log(
     `${C.dim}  Same attacker, but every attempt carries the SAME World ID nullifier.${C.reset}\n`,
@@ -182,7 +182,7 @@ async function phase2() {
   console.log(`  before: avg=${before.avg} (${stars(before.avg)}★) count=${before.count}`);
 
   // One anonymous unique-human id for ALL 100 attempts — this is what defeats the sybil.
-  const nullifierHash = keccak256(toBytes("lynx:attacker")) as Hex;
+  const nullifierHash = keccak256(toBytes("retinai:attacker")) as Hex;
   console.log(`  nullifierHash = ${C.cyan}${nullifierHash}${C.reset}`);
 
   // A valid agent auth so the forwarded giveFeedback would otherwise succeed.
@@ -290,7 +290,7 @@ function findHexData(err: unknown, depth = 0): Hex | undefined {
 }
 
 async function main() {
-  console.log(`${C.bold}Lynx — sybil attack demo${C.reset}`);
+  console.log(`${C.bold}RetinAI — sybil attack demo${C.reset}`);
   console.log(`${C.dim}  RPC ${RPC_URL}  |  ReviewGate ${addresses.ReviewGate}${C.reset}`);
   console.log(
     `${C.dim}  target agent ${AGENT_ID} (${addresses.agents.find((a) => BigInt(a.agentId) === AGENT_ID)?.ensName ?? "?"}), operator ${agentWallet}${C.reset}`,
@@ -321,7 +321,7 @@ async function main() {
       `  ${C.dim}(${raw.after.count} reviews, ${raw.landed} farmed this run)${C.reset}`,
   );
   console.log(
-    `  ${C.green}${C.bold}Lynx   :${C.reset}  ${C.bold}${stars(human.after.avg)} ★${C.reset}` +
+    `  ${C.green}${C.bold}RetinAI   :${C.reset}  ${C.bold}${stars(human.after.avg)} ★${C.reset}` +
       `  ${C.dim}(${accepted} human accepted, ${rejected} sybils rejected this run)${C.reset}`,
   );
   console.log(`${C.bold}══════════════════════════════════════════════════════════════${C.reset}\n`);

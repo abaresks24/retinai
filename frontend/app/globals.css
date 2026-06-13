@@ -950,7 +950,7 @@ a {
   }
 }
 
-/* Lynx logo placement */
+/* RetinAI logo placement */
 .brand { display: flex; align-items: center; gap: 12px; }
 .brand > span { display: flex; flex-direction: column; line-height: 1.05; }
 .hero-logo { display: block; margin: 0 auto 18px; filter: drop-shadow(0 6px 24px rgba(124,140,255,0.35)); }

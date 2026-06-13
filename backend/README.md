@@ -1,7 +1,7 @@
-# Lynx backend
+# RetinAI backend
 
 Hono + TypeScript + viem server on **port 8787**. It is the **off-chain attestor** and the
-**per-human x402 trial gate** for Lynx. It implements the frozen HTTP API in
+**per-human x402 trial gate** for RetinAI. It implements the frozen HTTP API in
 [`../SPEC.md`](../SPEC.md).
 
 ## Honest trust boundary
@@ -40,12 +40,12 @@ writes `shared/addresses.local.json`, restart to pick up addresses + agents.
 
 The free-trial counter is keyed by **`nullifierHash` (the human), NOT by wallet**
 (`src/trialStore.ts`). Switching wallets does **not** reset the trial — that is the whole
-point of Lynx.
+point of RetinAI.
 
 ### World ID verify
 
 - **Dev / mock**: pass `{ mockNullifier: "alice" }`. Deterministic
-  `nullifierHash = keccak256("lynx:" + mockNullifier)`.
+  `nullifierHash = keccak256("retinai:" + mockNullifier)`.
 - **Real**: pass an `@worldcoin/idkit` `proof` and set `WORLD_APP_ID`. The attestor verifies
   via the World ID cloud endpoint; if it can't complete, it falls back to mock so the demo
   never breaks.
@@ -113,7 +113,7 @@ The deployed canonical ERC-8004 `ReputationRegistry`
      reviews A (a 2-cycle on the owner↔agent map). Lights up when an `@owners` map is supplied
      (e.g. from IdentityRegistry indexing); skipped if empty.
 
-### Overlay (the Lynx thesis)
+### Overlay (the RetinAI thesis)
 
 The endpoint overlays, per tracked agentId: **`humanScore`/`humanCount`** read live from
 `ReviewGate` (the sybil-resistant one-human-one-vote score), and **`ensName`** from the

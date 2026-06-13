@@ -1,15 +1,15 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Lynx — Docs",
-  description: "How Lynx makes ERC-8004 agent reputation sybil-proof with World ID + ENS.",
+  title: "RetinAI — Docs",
+  description: "How RetinAI makes ERC-8004 agent reputation sybil-proof with World ID + ENS.",
 };
 
 export default function DocsPage() {
   return (
     <div className="docs">
       <Link href="/" className="back">← Home</Link>
-      <h1>Lynx — Docs</h1>
+      <h1>RetinAI — Docs</h1>
       <p>
         <b>The sybil-proof human review layer for ERC-8004.</b> Everyone built the rails to{" "}
         <i>pay</i> AI agents. Nobody built the way to know <b>which ones deserve it</b>.
@@ -24,9 +24,9 @@ export default function DocsPage() {
         fresh wallet can farm it. Roughly half of agent-payment volume today is wash/self-dealing.
       </p>
 
-      <h2>How Lynx fixes it</h2>
+      <h2>How RetinAI fixes it</h2>
       <p>
-        Lynx gates every reputation <i>write</i> by a <b>World ID nullifier</b> — an
+        RetinAI gates every reputation <i>write</i> by a <b>World ID nullifier</b> — an
         anonymous token that is unique per human. One human can review a given agent exactly
         once, enforced on-chain. 100 wallets controlled by one person collapse to one vote.
       </p>
@@ -35,7 +35,7 @@ export default function DocsPage() {
         <div className="step"><span className="n">1</span><div><b>Discover</b> — agents are listed by ENS name, with a live <b>ENSIP-25</b> badge that cross-checks the ENS↔ERC-8004 binding on-chain (green = verified, red = spoofed).</div></div>
         <div className="step"><span className="n">2</span><div><b>Try</b> — 3 free calls <b>per human</b> (not per wallet) via World ID; the 4th triggers an <b>x402</b> USDC micropayment.</div></div>
         <div className="step"><span className="n">3</span><div><b>Review</b> — leave a rating; the attestor writes it into the ERC-8004 ReputationRegistry, gated so one human votes once.</div></div>
-        <div className="step"><span className="n">4</span><div><b>Compare</b> — see the raw farmable score (5.0★) vs the Lynx human-weighted score side by side.</div></div>
+        <div className="step"><span className="n">4</span><div><b>Compare</b> — see the raw farmable score (5.0★) vs the RetinAI human-weighted score side by side.</div></div>
       </div>
 
       <h2>The standards we use</h2>

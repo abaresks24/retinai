@@ -8,7 +8,7 @@ export function TopBar() {
         <Logo size={30} />
         <span>
           <h1>
-            Ly<span className="grad">nx</span>
+            Retin<span className="grad">AI</span>
           </h1>
           <span className="tag">one human · one vote per agent</span>
         </span>

@@ -11,7 +11,7 @@ import {IIdentityRegistry} from "../interfaces/IIdentityRegistry.sol";
 ///         THIS IS THE SYBIL-VULNERABLE BASELINE: the agent operator authorizes its own
 ///         "clients" via `feedbackAuth` (an EIP-191 personal_sign by the agent wallet), so an
 ///         operator can spin up N wallets and self-review. The naive sum/count average has no
-///         per-human uniqueness, which is exactly what Lynx's ReviewGate fixes.
+///         per-human uniqueness, which is exactly what RetinAI's ReviewGate fixes.
 contract MockReputationRegistry is IReputationRegistry {
     IIdentityRegistry public immutable identity;
 

@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 /// @title IReputationRegistry
 /// @notice Faithful subset of the ERC-8004 reputation registry. This is the sybil-vulnerable
-///         surface Lynx gates: in ERC-8004 the agent authorizes the client via
+///         surface RetinAI gates: in ERC-8004 the agent authorizes the client via
 ///         `feedbackAuth`, which is precisely why an operator can sybil by authorizing its OWN
 ///         fake clients. The interface is frozen by SPEC.md.
 interface IReputationRegistry {

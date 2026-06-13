@@ -20,11 +20,11 @@ interface ICanonicalReputation {
     /// @param agentId        ERC-8004 agent id (the IdentityRegistry NFT token id)
     /// @param value          signed fixed-point score value (e.g. value=score, decimals=0)
     /// @param valueDecimals  number of decimals in `value` (<= 18)
-    /// @param tag1           free-form tag, filterable in getSummary (Lynx uses "lynx")
+    /// @param tag1           free-form tag, filterable in getSummary (RetinAI uses "retinai")
     /// @param tag2           secondary free-form tag, filterable in getSummary
     /// @param endpoint       optional endpoint string
     /// @param feedbackURI    optional off-chain URI for the feedback payload
-    /// @param feedbackHash   32-byte commitment (Lynx carries the anon nullifierHash here)
+    /// @param feedbackHash   32-byte commitment (RetinAI carries the anon nullifierHash here)
     function giveFeedback(
         uint256 agentId,
         int128 value,
@@ -39,7 +39,7 @@ interface ICanonicalReputation {
     /// @notice Aggregate feedback for an agent over an EXPLICIT client list (optionally filtered
     ///         by tag). There is NO global average: calling with an empty `clientAddresses`
     ///         reverts `"clientAddresses required"`. Sybil resistance is pushed to the reader,
-    ///         who chooses whom to trust — which is exactly the missing primitive Lynx adds.
+    ///         who chooses whom to trust — which is exactly the missing primitive RetinAI adds.
     /// @return count               number of matching feedback entries
     /// @return summaryValue        aggregate (signed) value
     /// @return summaryValueDecimals decimals for `summaryValue`

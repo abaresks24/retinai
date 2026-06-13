@@ -3,7 +3,7 @@
 /**
  * Hero comparison `/compare/[id]` — the money shot.
  *   LEFT:  Raw ERC-8004 score — the sybil-farmed 5.0★ (read from chain/backend).
- *   RIGHT: Lynx score — one-human-one-vote human-weighted score.
+ *   RIGHT: RetinAI score — one-human-one-vote human-weighted score.
  *
  * "Replay sybil attack" reads REAL on-chain numbers (ReputationRegistry.getSummary vs
  * ReviewGate.humanScore) and animates the 100-wallet flood: 1 review lands on the gated
@@ -128,7 +128,7 @@ export default function ComparePage({
     setHumanCount(trueHumanCount || 1);
     push({
       kind: "ok",
-      text: `Lynx: only 1 unique human landed → ${(trueHumanAvg / 20).toFixed(1)}★ (${
+      text: `RetinAI: only 1 unique human landed → ${(trueHumanAvg / 20).toFixed(1)}★ (${
         trueHumanCount || 1
       } human, 99 rejected)`,
     });
@@ -150,7 +150,7 @@ export default function ComparePage({
         </h2>
         <p className="lede" style={{ margin: "6px 0 0" }}>
           Same agent, two reputation systems. On the left, raw ERC-8004 — an operator
-          authorizes its own fake clients and farms a perfect 5.0★. On the right, Lynx
+          authorizes its own fake clients and farms a perfect 5.0★. On the right, RetinAI
           — every review must carry a unique World ID human, enforced on-chain by{" "}
           <code>ReviewGate</code>.
         </p>
@@ -171,7 +171,7 @@ export default function ComparePage({
         <div className="vs">vs</div>
 
         <div className="side human">
-          <div className="label">Lynx score</div>
+          <div className="label">RetinAI score</div>
           <div className="num" style={{ color: "var(--green)" }}>
             {humanStars.toFixed(1)}★
           </div>

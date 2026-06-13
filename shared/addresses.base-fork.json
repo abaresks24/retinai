@@ -8,9 +8,9 @@
   "agents": [
     {
       "agentId": 55221,
-      "agentURI": "ipfs://lynx-research-agent",
+      "agentURI": "ipfs://retinai-research-agent",
       "endpoint": "http://127.0.0.1:8787/agents/55221",
-      "ensName": "research-agent.lynx.eth",
+      "ensName": "research-agent.retinai.eth",
       "registryForEnsip25": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
       "wallet": "0x56262F1779298D9c7C22f5273ee254C3d8e4fA4F"
     }

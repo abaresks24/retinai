@@ -1,4 +1,4 @@
-// Shared helpers for the Lynx demo scripts.
+// Shared helpers for the RetinAI demo scripts.
 // Loads deployed addresses + ABIs from ../shared, exposes viem clients, and builds the
 // ERC-8004 feedbackAuth blob exactly as MockReputationRegistry.giveFeedback expects it.
 

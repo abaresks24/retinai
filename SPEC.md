@@ -1,4 +1,4 @@
-# Lynx — FROZEN SPEC (single source of truth)
+# RetinAI — FROZEN SPEC (single source of truth)
 
 > Every component codes against the interfaces in this file. Do not change a signature
 > without updating this file. If something here is ambiguous, prefer the simplest
@@ -7,7 +7,7 @@
 ## One-paragraph thesis
 
 The reputation layer of ERC-8004 is sybil-vulnerable: anyone can spin up N wallets and
-self-review. Lynx gates reputation **writes** by World ID nullifier — **one human, one
+self-review. RetinAI gates reputation **writes** by World ID nullifier — **one human, one
 vote per agent** — enforced on-chain. The store/directory is just the surface; the
 `ReviewGate` contract is the product. Agents are named by ENS and their ENS↔ERC-8004
 binding is verified live (ENSIP-25). A per-**human** (not per-wallet) free trial + x402
@@ -149,7 +149,7 @@ Score convention: UI stars = `score / 20` (score 20→1★, 100→5★).
   "agents": [
     {
       "agentId": 1,
-      "ensName": "research-agent.lynx.eth",
+      "ensName": "research-agent.retinai.eth",
       "wallet": "0x...",
       "agentURI": "https://.../agent.json",
       "endpoint": "http://127.0.0.1:8787/agents/1",
@@ -203,7 +203,7 @@ Reads `shared/addresses.local.json` + ABIs. Pages/sections:
      label the trust source honestly in UI.
 2. **Agent page** `/agent/[id]` — try (3 free/human) → 402 → pay → review form.
 3. **Hero comparison** `/compare/[id]` — side by side **Raw ERC-8004 score (5.0 ★, farmed)**
-   vs **Lynx score (1.0 ★)**, with a "Replay sybil attack" button that fires the
+   vs **RetinAI score (1.0 ★)**, with a "Replay sybil attack" button that fires the
    100-wallet attack against `ReviewGate` and shows 99 rejections live.
 
 WorldID: use `@worldcoin/idkit` widget if wired; dev fallback button "Verify (mock human)".

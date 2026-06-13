@@ -1,5 +1,5 @@
 /**
- * Lynx logomark — a minimal monoline lynx head (tufted ears + the sharp, discerning gaze).
+ * RetinAI logomark — a minimal monoline retinai head (tufted ears + the sharp, discerning gaze).
  * Uses the brand gradient. Pure SVG, scales crisply; pass `size` to control it.
  */
 export function Logo({ size = 28, className }: { size?: number; className?: string }) {
@@ -9,16 +9,16 @@ export function Logo({ size = 28, className }: { size?: number; className?: stri
       height={size}
       viewBox="0 0 64 64"
       fill="none"
-      stroke="url(#lynxGrad)"
+      stroke="url(#retinaiGrad)"
       strokeWidth={3.1}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
-      aria-label="Lynx"
+      aria-label="RetinAI"
       role="img"
     >
       <defs>
-        <linearGradient id="lynxGrad" x1="6" y1="6" x2="58" y2="58" gradientUnits="userSpaceOnUse">
+        <linearGradient id="retinaiGrad" x1="6" y1="6" x2="58" y2="58" gradientUnits="userSpaceOnUse">
           <stop stopColor="#7c8cff" />
           <stop offset="1" stopColor="#b98bff" />
         </linearGradient>

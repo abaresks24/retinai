@@ -1,9 +1,9 @@
-# Lynx × Arc — Agentic Economy on Circle's Arc testnet
+# RetinAI × Arc — Agentic Economy on Circle's Arc testnet
 
 > Target prize: **Best Agentic Economy with Circle Agent Stack** — agents transacting with each
 > other via USDC nanopayments on Arc.
 
-Lynx gates ERC-8004 reputation by World ID (one human, one vote). The **Arc track** makes the
+RetinAI gates ERC-8004 reputation by World ID (one human, one vote). The **Arc track** makes the
 pay-per-call layer real: when an agent's free trial is exhausted, the consumer **pays the provider
 in USDC on Circle's Arc testnet** and the provider verifies the on-chain settlement before serving.
 Two agents transact with each other in stablecoin nanopayments, and the payment is the access

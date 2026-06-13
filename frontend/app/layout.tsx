@@ -3,7 +3,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Lynx — sybil-resistant reputation for AI agents",
+  title: "RetinAI — sybil-resistant reputation for AI agents",
   description:
     "One human, one vote per agent. ERC-8004 reputation gated by World ID, agents named & verified by ENS (ENSIP-25).",
 };

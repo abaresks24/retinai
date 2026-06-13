@@ -12,12 +12,12 @@ import {ICanonicalReputation} from "./interfaces/ICanonicalReputation.sol";
 ///         `nullifierHash`. A trusted attestor verifies the Delegated World ID proof off-chain
 ///         and submits the derived `nullifierHash`; the one-human-one-vote uniqueness is enforced
 ///         here. We keep a LOCAL human aggregate (scores 1..100, identical to {ReviewGate}) AND
-///         additionally forward each accepted review to canonical 8004 as a tagged `"lynx"`
+///         additionally forward each accepted review to canonical 8004 as a tagged `"retinai"`
 ///         feedback entry, with the anonymous nullifier carried in `feedbackHash`.
 ///
 ///         Because the canonical contract records `client == msg.sender`, every forwarded review
 ///         lands under this gate's address. The canonical, sybil-resistant read is therefore:
-///             canonicalReputation.getSummary(agentId, [address(this)], "lynx", "")
+///             canonicalReputation.getSummary(agentId, [address(this)], "retinai", "")
 ///         which returns the human-gated aggregate that 8004-native readers can consume.
 ///
 ///         GUARD: this gate must NEVER be the agent owner/operator, or canonical's self-feedback
@@ -60,7 +60,7 @@ contract CanonicalReviewGate {
 
     /// @notice Attestor submits a human-verified review. Reverts `AlreadyReviewed` if this human
     ///         already reviewed this agent (the sybil defense). Records the local human aggregate,
-    ///         then mirror-writes a tagged `"lynx"` entry to the canonical ERC-8004 registry.
+    ///         then mirror-writes a tagged `"retinai"` entry to the canonical ERC-8004 registry.
     ///
     ///         NOTE: the canonical path has NO `feedbackAuth` param — feedback is permissionless
     ///         and `client == msg.sender (== this gate)`. Do not add one.
@@ -83,13 +83,13 @@ contract CanonicalReviewGate {
         emit HumanReview(nullifierHash, agentId, score);
 
         // Mirror-write to canonical ERC-8004 EXACTLY per spike §3: value = score (decimals 0),
-        // tag1 = "lynx" so 8004 readers can filter to human-gated feedback, and the anon
+        // tag1 = "retinai" so 8004 readers can filter to human-gated feedback, and the anon
         // nullifier carried in feedbackHash. score is 1..100, so int128(uint128(score)) is exact.
         canonicalReputation.giveFeedback(
             agentId,
             int128(uint128(score)),
             0,
-            "lynx",
+            "retinai",
             "",
             "",
             "",
@@ -99,7 +99,7 @@ contract CanonicalReviewGate {
 
     /// @notice Convenience LOCAL read, identical to {ReviewGate.humanScore}. For the canonical,
     ///         sybil-resistant on-chain read use
-    ///         `canonicalReputation.getSummary(agentId, [address(this)], "lynx", "")`.
+    ///         `canonicalReputation.getSummary(agentId, [address(this)], "retinai", "")`.
     /// @return avg human-weighted average (1..100, 0 if none)
     /// @return count unique humans
     function humanScore(uint256 agentId) external view returns (uint64 avg, uint64 count) {

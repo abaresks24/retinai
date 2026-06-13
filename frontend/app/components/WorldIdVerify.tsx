@@ -12,7 +12,7 @@ import { IDKitWidget, VerificationLevel, type ISuccessResult } from "@worldcoin/
 import { worldIdVerify, type VerifyResult } from "../lib/backend";
 
 const WORLD_APP_ID = process.env.NEXT_PUBLIC_WORLD_APP_ID as `app_${string}` | undefined;
-const WORLD_ACTION = process.env.NEXT_PUBLIC_WORLD_ACTION || "lynx-review";
+const WORLD_ACTION = process.env.NEXT_PUBLIC_WORLD_ACTION || "retinai-review";
 
 export function WorldIdVerify({
   agentId,
@@ -58,7 +58,7 @@ export function WorldIdVerify({
       <h3>1 · Prove you&apos;re human</h3>
       <p className="sub">
         World ID gives an anonymous, per-human <code>nullifierHash</code>. This is the
-        identity Lynx gates on — <b>per human, not per wallet</b>. The 3 free trial
+        identity RetinAI gates on — <b>per human, not per wallet</b>. The 3 free trial
         calls and your one review both key off it; switching wallets will not reset them.
       </p>
 

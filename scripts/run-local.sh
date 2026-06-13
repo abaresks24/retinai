@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# run-local.sh — bring up the full Lynx local stack, idempotently.
+# run-local.sh — bring up the full RetinAI local stack, idempotently.
 #
 #   1. start anvil (if port 8545 is free)
 #   2. forge deploy (if shared/addresses.local.json is missing) + export ABIs
@@ -160,7 +160,7 @@ fi
 
 # --- done ---------------------------------------------------------------------
 echo ""
-echo -e "${B}${G}Lynx local stack is up.${N}"
+echo -e "${B}${G}RetinAI local stack is up.${N}"
 echo -e "  ${B}RPC      ${N} $RPC_URL"
 echo -e "  ${B}Backend  ${N} $BACKEND_URL    ${D}(GET /health, /agents)${N}"
 echo -e "  ${B}Frontend ${N} $FRONTEND_URL"

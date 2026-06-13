@@ -32,7 +32,7 @@ const SEED: Array<{ agentId: number; human: string; score: number }> = [
 ];
 
 function nullifierFor(human: string): Hex {
-  return keccak256(toBytes(`lynx:seed:${human}`));
+  return keccak256(toBytes(`retinai:seed:${human}`));
 }
 
 async function alreadyReviewed(nullifier: Hex, agentId: bigint): Promise<boolean> {
@@ -45,7 +45,7 @@ async function alreadyReviewed(nullifier: Hex, agentId: bigint): Promise<boolean
 }
 
 async function main() {
-  console.log("Lynx — seed legitimate human reviews");
+  console.log("RetinAI — seed legitimate human reviews");
   console.log(`  RPC ${addresses.rpcUrl}  |  ReviewGate ${addresses.ReviewGate}\n`);
 
   // Sanity: our key must be the on-chain attestor.

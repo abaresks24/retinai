@@ -2,7 +2,7 @@
  * In-memory per-HUMAN free-trial counter.
  *
  * CRITICAL CORRECTNESS POINT: the key is `${nullifierHash}:${agentId}` — i.e. keyed by
- * the HUMAN (World ID nullifier), NOT by wallet. This is the whole point of Lynx:
+ * the HUMAN (World ID nullifier), NOT by wallet. This is the whole point of RetinAI:
  * switching wallets does NOT reset the free trial, because the human behind the wallets
  * is the same nullifier. A wallet-keyed counter would be trivially sybil-farmable.
  */

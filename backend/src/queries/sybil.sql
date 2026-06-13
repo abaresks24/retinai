@@ -1,4 +1,4 @@
--- Lynx — pure-graph sybil detection over the ERC-8004 feedback edge set.
+-- RetinAI — pure-graph sybil detection over the ERC-8004 feedback edge set.
 --
 -- THE DIFFERENTIATOR vs a generic explorer. We never decode `data`; everything below is
 -- derivable from the indexed topics alone (agentId = topics[1], client = topics[2]), so it is

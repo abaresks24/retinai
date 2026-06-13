@@ -46,7 +46,7 @@ export default function Landing() {
 
         <Logo size={92} className="hero-logo" />
         <h1 className="hero-title">
-          Ly<span className="hero-title-accent">nx</span>
+          Retin<span className="hero-title-accent">AI</span>
         </h1>
         <p className="hero-tagline">The sybil-proof human review layer for ERC-8004.</p>
         <p className="hero-sub">

@@ -55,10 +55,9 @@ export default function Landing() {
       </div>
 
       <div className="hero-inner">
-        <Logo size={156} className="hero-logo" />
-        <h1 className="hero-title">
+        <div className="hero-wordmark"><h1 className="hero-title">
           Retin<span className="hero-title-accent">AI</span>
-        </h1>
+        </h1><Logo size={118} className="hero-logo" /></div>
         <p className="hero-tagline">The sybil-proof human review layer for ERC-8004.</p>
         <p className="hero-sub">
           Everyone built the rails to <i>pay</i> AI agents. Nobody built the way to know

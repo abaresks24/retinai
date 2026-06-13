@@ -998,3 +998,67 @@ a {
   display: inline-block;
 }
 .loader { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 48px 0; color: var(--text-dim); }
+
+/* ===================== Monochrome DA: black / white / grey ===================== */
+:root {
+  --bg: #0a0a0a;
+  --bg-elev: #141414;
+  --bg-elev2: #1c1c1c;
+  --border: #2b2b2b;
+  --text: #ededed;
+  --text-dim: #9a9a9a;
+  --accent: #ededed;   /* was purple — now near-white */
+  --accent-2: #b5b5b5;
+  --star: #f2f2f2;     /* white stars */
+  --star-empty: #3a3a3a;
+}
+
+/* neutral (grey, not blue) background glow */
+body {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(255, 255, 255, 0.05), transparent 60%),
+    radial-gradient(900px 500px at 0% 0%, rgba(255, 255, 255, 0.03), transparent 55%),
+    var(--bg);
+}
+
+/* Launch app button: white, no purple */
+.btn-primary {
+  background: linear-gradient(180deg, #ffffff, #d9d9d9);
+  color: #0a0a0a;
+  box-shadow: 0 10px 34px rgba(255, 255, 255, 0.12);
+}
+
+/* hero fallback gradient + tint -> greys */
+.hero-media {
+  background:
+    radial-gradient(1200px 700px at 75% -10%, rgba(255, 255, 255, 0.10), transparent 60%),
+    radial-gradient(900px 600px at 0% 110%, rgba(255, 255, 255, 0.06), transparent 55%),
+    linear-gradient(120deg, #0a0a0a, #181818 50%, #0a0a0a);
+}
+.hero-media::after { background: none; }
+
+/* landing: logo to the RIGHT of the wordmark, vertically centered, scales with the title */
+.hero-wordmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 2.2vw, 24px);
+  margin-bottom: 14px;
+}
+.hero-logo {
+  width: clamp(56px, 12vw, 118px);
+  height: auto;
+  margin: 0;
+  filter: drop-shadow(0 6px 22px rgba(255, 255, 255, 0.12));
+}
+
+/* page-level loader: spinning logo centered on the page */
+.page-loader {
+  min-height: 64vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--text-dim);
+}

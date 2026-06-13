@@ -94,8 +94,8 @@ export default function AppDirectoryPage() {
       )}
 
       {loading && (
-        <div className="empty">
-          <Logo className="logo-spin" size={52} /> &nbsp;loading agents…
+        <div className="page-loader">
+          <Logo className="logo-spin" size={72} /> &nbsp;loading agents…
         </div>
       )}
 

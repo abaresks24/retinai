@@ -96,8 +96,8 @@ export default function LeaderboardPage() {
       )}
 
       {loading && (
-        <div className="empty">
-          <Logo className="logo-spin" size={52} /> &nbsp;querying BigQuery…
+        <div className="page-loader">
+          <Logo className="logo-spin" size={72} /> &nbsp;querying BigQuery…
         </div>
       )}
 

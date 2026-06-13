@@ -8,7 +8,6 @@
  */
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Logo } from "./components/Logo";
 
 const DOCS_URL = process.env.NEXT_PUBLIC_DOCS_URL || "/docs";
 
@@ -55,14 +54,9 @@ export default function Landing() {
       </div>
 
       <div className="hero-inner">
-        <div className="hero-wordmark"><h1 className="hero-title">
+        <h1 className="hero-title">
           Retin<span className="hero-title-accent">AI</span>
-        </h1><Logo size={118} className="hero-logo" /></div>
-        <p className="hero-tagline">The sybil-proof human review layer for ERC-8004.</p>
-        <p className="hero-sub">
-          Everyone built the rails to <i>pay</i> AI agents. Nobody built the way to know
-          <b> which ones deserve it.</b> One human, one vote — enforced on-chain.
-        </p>
+        </h1>
 
         <div className="hero-cta">
           <Link href="/app" className="btn btn-primary btn-lg">
